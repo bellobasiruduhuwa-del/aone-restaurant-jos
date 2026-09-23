@@ -44,7 +44,7 @@ export default function ProductDetail() {
       <div className="grid md:grid-cols-2 gap-10 mt-6">
         <div className="aspect-square rounded-2xl bg-ink/5 overflow-hidden">
           {product.imageUrl ? (
-            <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+            <img src={product.imageUrl} alt={product.name} loading="lazy" decoding="async" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-ink/30 font-display">
               Photo coming soon

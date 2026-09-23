@@ -83,7 +83,7 @@ export default function Cart() {
           <div key={item.productId} className="flex items-center gap-4 py-4">
             <div className="w-16 h-16 rounded-xl bg-ink/5 overflow-hidden shrink-0">
               {item.imageUrl && (
-                <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                <img src={item.imageUrl} alt={item.name} loading="lazy" decoding="async" className="w-full h-full object-cover" />
               )}
             </div>
             <div className="flex-1 min-w-0">
@@ -127,7 +127,7 @@ export default function Cart() {
                 className="shrink-0 w-36 border border-ink/10 rounded-xl overflow-hidden bg-white"
               >
                 <div className="aspect-video bg-ink/5">
-                  {p.imageUrl && <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" />}
+                  {p.imageUrl && <img src={p.imageUrl} alt={p.name} loading="lazy" decoding="async" className="w-full h-full object-cover" />}
                 </div>
                 <div className="p-2.5">
                   <p className="text-sm font-medium truncate">{p.name}</p>
