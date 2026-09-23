@@ -1,33 +1,37 @@
-// Google Gemini helper.
-// Calls Gemini's free API directly from the browser. The API key here is
-// meant for client-side use on the free tier (same pattern as the ImgBB key).
+// AI helper — now powered by Groq (fast, free, reliable).
+// Function name kept as askGemini so every other file that imports it
+// (ChatWidget, Cart, Products) doesn't need to change at all.
 
-const GEMINI_API_KEY = "AQ.Ab8RN6Jy14tNj3z1TmB-Tn3Fb4T7IMY3B3_5LyLlkBkr8DS_CQ";
-const MODEL = "gemini-2.0-flash";
+const GROQ_API_KEY = "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";
+const MODEL = "llama-3.3-70b-versatile";
 
 export async function askGemini(prompt, systemInstruction) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+  const url = "https://api.groq.com/openai/v1/chat/completions";
 
-  const body = {
-    contents: [{ parts: [{ text: prompt }] }],
-  };
+  const messages = [];
   if (systemInstruction) {
-    body.systemInstruction = { parts: [{ text: systemInstruction }] };
+    messages.push({ role: "system", content: systemInstruction });
   }
+  messages.push({ role: "user", content: prompt });
 
   const response = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      messages,
+    }),
   });
 
   if (!response.ok) {
     const errText = await response.text().catch(() => "");
-    throw new Error(`Gemini request failed: ${errText || response.status}`);
+    throw new Error(`AI request failed: ${errText || response.status}`);
   }
 
   const data = await response.json();
-  const text =
-    data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join("") || "";
+  const text = data?.choices?.[0]?.message?.content || "";
   return text.trim();
 }
