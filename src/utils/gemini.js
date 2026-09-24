@@ -1,8 +1,8 @@
-// AI helper — now powered by Groq (fast, free, reliable).
+// AI helper — powered by Groq (fast, free, reliable).
 // Function name kept as askGemini so every other file that imports it
 // (ChatWidget, Cart, Products) doesn't need to change at all.
 
-const GROQ_API_KEY = "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";
+const GROQ_API_KEY = "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";
 const MODEL = "llama-3.3-70b-versatile";
 
 export async function askGemini(prompt, systemInstruction) {
