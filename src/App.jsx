@@ -36,7 +36,7 @@ function CustomerLayout({ children }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <WhatsAppButton />
-      {/* <ChatWidget /> — temporarily hidden, re-enable later */}
+      <ChatWidget />
     </div>
   );
 }
