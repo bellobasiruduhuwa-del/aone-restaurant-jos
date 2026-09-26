@@ -5,18 +5,18 @@ export default {
     extend: {
       colors: {
         jollof: {
-          DEFAULT: "#B3202C",
-          dark: "#8A1922",
-          light: "#D94A4A",
+          DEFAULT: "rgb(var(--color-jollof) / <alpha-value>)",
+          dark: "rgb(var(--color-jollof-dark) / <alpha-value>)",
+          light: "rgb(var(--color-jollof-light) / <alpha-value>)",
         },
         palm: {
-          DEFAULT: "#1E5631",
-          dark: "#123A20",
-          light: "#2F7A47",
+          DEFAULT: "rgb(var(--color-palm) / <alpha-value>)",
+          dark: "rgb(var(--color-palm-dark) / <alpha-value>)",
+          light: "rgb(var(--color-palm-light) / <alpha-value>)",
         },
-        cream: "#FFF8F0",
-        ink: "#201A18",
-        gold: "#C98A2C",
+        cream: "rgb(var(--color-cream) / <alpha-value>)",
+        ink: "rgb(var(--color-ink) / <alpha-value>)",
+        gold: "rgb(var(--color-gold) / <alpha-value>)",
       },
       fontFamily: {
         display: ["Fraunces", "serif"],

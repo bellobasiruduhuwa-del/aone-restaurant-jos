@@ -4,6 +4,15 @@
 
 :root {
   color-scheme: light;
+  --color-jollof: 179 32 44;
+  --color-jollof-dark: 138 25 34;
+  --color-jollof-light: 217 74 74;
+  --color-palm: 30 86 49;
+  --color-palm-dark: 18 58 32;
+  --color-palm-light: 47 122 71;
+  --color-cream: 255 248 240;
+  --color-ink: 32 26 24;
+  --color-gold: 201 138 44;
 }
 
 html {
@@ -18,7 +27,6 @@ h1, h2, h3, h4 {
   @apply font-display;
 }
 
-/* Visible keyboard focus everywhere, per accessibility floor */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -37,7 +45,6 @@ textarea:focus-visible {
   }
 }
 
-/* Utility for line-clamping food descriptions on cards */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

@@ -58,6 +58,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Director */}
+      {settings.directorPhotoUrl && (
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+          <div className="bg-white border border-ink/10 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+            <img
+              src={settings.directorPhotoUrl}
+              alt={settings.directorName || "Director"}
+              className="w-28 h-28 rounded-full object-cover shrink-0 border-4 border-jollof/10"
+            />
+            <div>
+              <p className="font-display text-xl">{settings.directorName}</p>
+              <p className="text-sm text-jollof mb-2">{settings.directorTitle}</p>
+              {settings.directorMessage && (
+                <p className="text-ink/70 text-sm">&ldquo;{settings.directorMessage}&rdquo;</p>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Featured */}
       {featured.length > 0 && (
         <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12">

@@ -7,6 +7,7 @@ export default function RestaurantSettings() {
   const { settings } = useSettings();
   const [form, setForm] = useState(settings);
   const [logoFile, setLogoFile] = useState(null);
+  const [directorPhotoFile, setDirectorPhotoFile] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -19,6 +20,12 @@ export default function RestaurantSettings() {
 
   function updateSocial(field, value) {
     setForm((f) => ({ ...f, socialLinks: { ...f.socialLinks, [field]: value } }));
+  }
+
+  function updateThemeColor(key, hex) {
+    const triple = hexToRgbTriple(hex);
+    if (!triple) return;
+    setForm((f) => ({ ...f, themeColors: { ...f.themeColors, [key]: triple } }));
   }
 
   async function handleSubmit(e) {
@@ -190,6 +197,87 @@ export default function RestaurantSettings() {
               className="mt-2 w-16 h-16 object-cover rounded-full"
             />
           )}
+        </div>
+
+        <div className="border-t border-ink/10 pt-5">
+          <p className="text-sm font-medium mb-1">Director / owner (shown on homepage)</p>
+          <p className="text-xs text-ink/50 mb-4">
+            Leave the photo empty to hide this section from the homepage.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Name</label>
+              <input
+                value={form.directorName || ""}
+                onChange={(e) => update("directorName", e.target.value)}
+                className="w-full border border-ink/15 rounded-xl px-4 py-2.5 focus:border-jollof outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Title</label>
+              <input
+                value={form.directorTitle || ""}
+                onChange={(e) => update("directorTitle", e.target.value)}
+                placeholder="Director"
+                className="w-full border border-ink/15 rounded-xl px-4 py-2.5 focus:border-jollof outline-none"
+              />
+            </div>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1.5">Short message (optional)</label>
+            <textarea
+              rows={2}
+              value={form.directorMessage || ""}
+              onChange={(e) => update("directorMessage", e.target.value)}
+              placeholder="A short welcome message from the director"
+              className="w-full border border-ink/15 rounded-xl px-4 py-2.5 focus:border-jollof outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Photo</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setDirectorPhotoFile(e.target.files?.[0] || null)}
+              className="text-sm"
+            />
+            {(directorPhotoFile || form.directorPhotoUrl) && (
+              <img
+                src={directorPhotoFile ? URL.createObjectURL(directorPhotoFile) : form.directorPhotoUrl}
+                alt="Director preview"
+                className="mt-2 w-20 h-20 object-cover rounded-full"
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="border-t border-ink/10 pt-5">
+          <p className="text-sm font-medium mb-1">App colors</p>
+          <p className="text-xs text-ink/50 mb-4">
+            Changes every matching piece of text, button and accent across the whole site —
+            customer pages and this dashboard.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { key: "jollof", label: "Primary (buttons, prices)" },
+              { key: "jollofDark", label: "Primary — hover" },
+              { key: "palm", label: "Secondary (accents)" },
+              { key: "palmDark", label: "Secondary — hover" },
+              { key: "gold", label: "Highlight (featured, stars)" },
+              { key: "ink", label: "Main text color" },
+              { key: "cream", label: "Page background" },
+            ].map(({ key, label }) => (
+              <div key={key}>
+                <label className="block text-xs font-medium mb-1.5 text-ink/60">{label}</label>
+                <input
+                  type="color"
+                  value={rgbTripleToHex(form.themeColors?.[key])}
+                  onChange={(e) => updateThemeColor(key, e.target.value)}
+                  className="w-full h-10 border border-ink/15 rounded-lg cursor-pointer"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4">

@@ -8,6 +8,7 @@ import CartToast from "./components/CartToast";
 import CartToast from "./components/CartToast";
 import FirebaseSetupNotice from "./components/FirebaseSetupNotice";
 import ClosedBanner from "./components/ClosedBanner";
+import ThemeApplier from "./components/ThemeApplier";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
@@ -52,7 +53,9 @@ function CustomerLayout({ children }) {
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <ThemeApplier />
+      <Routes>
       {/* Customer-facing site */}
       <Route path="/" element={<CustomerLayout><Home /></CustomerLayout>} />
       <Route path="/about" element={<CustomerLayout><About /></CustomerLayout>} />
@@ -101,5 +104,6 @@ export default function App() {
         }
       />
     </Routes>
+    </>
   );
 }
