@@ -5,7 +5,6 @@ import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton";
 import ChatWidget from "./components/ChatWidget";
 import CartToast from "./components/CartToast";
-import CartToast from "./components/CartToast";
 import FirebaseSetupNotice from "./components/FirebaseSetupNotice";
 import ClosedBanner from "./components/ClosedBanner";
 import ThemeApplier from "./components/ThemeApplier";
@@ -45,7 +44,6 @@ function CustomerLayout({ children }) {
       <Footer />
       <WhatsAppButton />
       <ChatWidget />
-      <CartToast />
       <CartToast />
     </div>
   );
