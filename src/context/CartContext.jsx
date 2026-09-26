@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useReducer } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
 
 const CartContext = createContext(null);
 const STORAGE_KEY = "aone_cart_v1";
@@ -54,10 +54,17 @@ function reducer(state, action) {
 
 export function CartProvider({ children }) {
   const [items, dispatch] = useReducer(reducer, undefined, loadInitialCart);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 2500);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const value = useMemo(() => {
     const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -66,13 +73,19 @@ export function CartProvider({ children }) {
       items,
       itemCount,
       subtotal,
-      addItem: (product, quantity) => dispatch({ type: "ADD", payload: { product, quantity } }),
+      toast,
+      addItem: (product, quantity = 1) => {
+        dispatch({ type: "ADD", payload: { product, quantity } });
+        const existing = items.find((i) => i.productId === product.id);
+        const newQty = (existing?.quantity || 0) + quantity;
+        setToast({ name: product.name, quantity: newQty });
+      },
       increment: (productId) => dispatch({ type: "INCREMENT", payload: productId }),
       decrement: (productId) => dispatch({ type: "DECREMENT", payload: productId }),
       removeItem: (productId) => dispatch({ type: "REMOVE", payload: productId }),
       clearCart: () => dispatch({ type: "CLEAR" }),
     };
-  }, [items]);
+  }, [items, toast]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

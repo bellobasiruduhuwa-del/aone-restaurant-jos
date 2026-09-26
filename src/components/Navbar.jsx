@@ -55,16 +55,44 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <button
-          className="md:hidden p-2 -mr-2"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((o) => !o)}
-        >
-          <div className="w-6 h-0.5 bg-ink mb-1.5" />
-          <div className="w-6 h-0.5 bg-ink mb-1.5" />
-          <div className="w-6 h-0.5 bg-ink" />
-        </button>
+        <div className="flex items-center gap-1 md:hidden">
+          <Link
+            to="/cart"
+            className="relative p-2"
+            aria-label={`Cart, ${itemCount} item${itemCount === 1 ? "" : "s"}`}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-ink"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            {itemCount > 0 && (
+              <span className="absolute top-0 right-0 w-4.5 h-4.5 min-w-[18px] rounded-full bg-jollof text-cream text-[10px] font-bold flex items-center justify-center px-1">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+          <button
+            className="p-2"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((o) => !o)}
+          >
+            <div className="w-6 h-0.5 bg-ink mb-1.5" />
+            <div className="w-6 h-0.5 bg-ink mb-1.5" />
+            <div className="w-6 h-0.5 bg-ink" />
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -80,9 +108,6 @@ export default function Navbar() {
               {l.label}
             </NavLink>
           ))}
-          <Link to="/cart" className={linkClass({ isActive: false })} onClick={() => setOpen(false)}>
-            Cart {itemCount > 0 ? `(${itemCount})` : ""}
-          </Link>
         </nav>
       )}
     </header>
