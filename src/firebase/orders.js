@@ -5,6 +5,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
@@ -73,4 +74,25 @@ export async function updateOrderStatus(id, status) {
 
 export async function deleteOrder(id) {
   await deleteDoc(doc(db, "orders", id));
+}
+
+/**
+ * Public order lookup by ID — used by the customer-facing "Track your
+ * order" page. Anyone with the exact order ID (from their WhatsApp
+ * confirmation) can look it up, but the order list itself stays
+ * admin-only, so customers can't browse each other's orders.
+ */
+export async function getOrder(orderId) {
+  const snap = await getDoc(doc(db, "orders", orderId));
+  if (!snap.exists()) return null;
+  return { id: snap.id, ...snap.data() };
+}
+
+/** Live status updates for one order, for the tracking page. */
+export function subscribeToOrder(orderId, onData, onError) {
+  return onSnapshot(
+    doc(db, "orders", orderId),
+    (snap) => onData(snap.exists() ? { id: snap.id, ...snap.data() } : null),
+    onError
+  );
 }

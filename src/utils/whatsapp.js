@@ -59,6 +59,8 @@ export function buildWhatsAppOrderUrl({
     "Additional Notes:",
     notes || "None",
     "",
+    `Track your order: ${typeof window !== "undefined" ? window.location.origin : ""}/track/${orderId}`,
+    "",
     "Please confirm my order.",
   ];
 

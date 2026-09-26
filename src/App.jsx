@@ -18,6 +18,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Contact from "./pages/Contact";
 import Reviews from "./pages/Reviews";
+import TrackOrder from "./pages/TrackOrder";
 
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -61,6 +62,8 @@ export default function App() {
       <Route path="/checkout" element={<CustomerLayout><Checkout /></CustomerLayout>} />
       <Route path="/contact" element={<CustomerLayout><Contact /></CustomerLayout>} />
       <Route path="/reviews" element={<CustomerLayout><Reviews /></CustomerLayout>} />
+      <Route path="/track" element={<CustomerLayout><TrackOrder /></CustomerLayout>} />
+      <Route path="/track/:orderId" element={<CustomerLayout><TrackOrder /></CustomerLayout>} />
 
       {/* Admin */}
       <Route path="/admin/login" element={<AdminLogin />} />
