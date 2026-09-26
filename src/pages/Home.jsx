@@ -26,45 +26,28 @@ export default function Home() {
     <div>
       {/* Hero */}
       <section className="bg-gradient-to-b from-jollof/[0.06] to-transparent">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24 grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 className="font-display text-4xl sm:text-5xl leading-[1.1] mb-5">
-              Welcome to {settings.brandName}
-            </h1>
-            <p className="text-lg text-ink/70 mb-2">{settings.slogan}</p>
-            <p className="text-ink/60 mb-8 max-w-md">
-              Enjoy delicious Nigerian meals, fast food, drinks, and special tea
-              at {settings.brandName}, Jos.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                to="/menu"
-                className="bg-jollof text-cream px-7 py-3 rounded-full font-medium hover:bg-jollof-dark transition-colors"
-              >
-                Order Now
-              </Link>
-              <Link
-                to="/menu"
-                className="border border-ink/20 px-7 py-3 rounded-full font-medium hover:border-ink/50 transition-colors"
-              >
-                View Menu
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="aspect-square rounded-2xl bg-jollof/10 flex items-center justify-center text-jollof/50 font-display">
-              Jollof Rice
-            </div>
-            <div className="aspect-square rounded-2xl bg-palm/10 flex items-center justify-center text-palm/60 font-display mt-8">
-              Pepper Soup
-            </div>
-            <div className="aspect-square rounded-2xl bg-gold/10 flex items-center justify-center text-gold/70 font-display">
-              Combo Meal
-            </div>
-            <div className="aspect-square rounded-2xl bg-ink/5 flex items-center justify-center text-ink/40 font-display mt-8">
-              Special Tea
-            </div>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
+          <h1 className="font-display text-4xl sm:text-5xl leading-[1.1] mb-5">
+            Welcome to {settings.brandName}
+          </h1>
+          <p className="text-lg text-ink/70 mb-2">{settings.slogan}</p>
+          <p className="text-ink/60 mb-8 max-w-md mx-auto">
+            Enjoy delicious Nigerian meals, fast food, drinks, and special tea
+            at {settings.brandName}, Jos.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              to="/menu"
+              className="bg-jollof text-cream px-7 py-3 rounded-full font-medium hover:bg-jollof-dark transition-colors"
+            >
+              Order Now
+            </Link>
+            <Link
+              to="/menu"
+              className="border border-ink/20 px-7 py-3 rounded-full font-medium hover:border-ink/50 transition-colors"
+            >
+              View Menu
+            </Link>
           </div>
         </div>
       </section>
