@@ -6,6 +6,7 @@ import { createOrder } from "../firebase/orders";
 import { buildWhatsAppOrderUrl } from "../utils/whatsapp";
 import { formatNaira, isValidNigerianPhone } from "../utils/format";
 import { isOpenNow } from "../utils/hours";
+import { distanceKm } from "../utils/distance";
 
 const ORDER_TYPES = ["Dine-in", "Takeaway", "Delivery"];
 
@@ -25,12 +26,52 @@ export default function Checkout() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [customerDistanceKm, setCustomerDistanceKm] = useState(null);
+  const [locatingCustomer, setLocatingCustomer] = useState(false);
+  const [locationDenied, setLocationDenied] = useState(false);
+
+  const distancePricingAvailable =
+    Number(settings.deliveryPerKmFee) > 0 &&
+    settings.restaurantLat != null &&
+    settings.restaurantLng != null;
+
+  function useMyLocationForDelivery() {
+    if (!navigator.geolocation) {
+      setLocationDenied(true);
+      return;
+    }
+    setLocatingCustomer(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const km = distanceKm(
+          settings.restaurantLat,
+          settings.restaurantLng,
+          pos.coords.latitude,
+          pos.coords.longitude
+        );
+        setCustomerDistanceKm(km);
+        setLocatingCustomer(false);
+      },
+      () => {
+        setLocationDenied(true);
+        setLocatingCustomer(false);
+      }
+    );
+  }
 
   const fees = useMemo(() => {
     const takeawayFee = form.orderType === "Takeaway" && settings.takeawayEnabled ? settings.takeawayFee : 0;
-    const deliveryFee = form.orderType === "Delivery" && settings.deliveryEnabled ? settings.deliveryFee : 0;
+    let deliveryFee = 0;
+    if (form.orderType === "Delivery" && settings.deliveryEnabled) {
+      if (distancePricingAvailable && customerDistanceKm != null) {
+        deliveryFee =
+          Number(settings.deliveryFee) + Math.round(customerDistanceKm * Number(settings.deliveryPerKmFee));
+      } else {
+        deliveryFee = settings.deliveryFee;
+      }
+    }
     return { takeawayFee, deliveryFee };
-  }, [form.orderType, settings]);
+  }, [form.orderType, settings, customerDistanceKm, distancePricingAvailable]);
 
   const total = subtotal + fees.takeawayFee + fees.deliveryFee;
 
@@ -175,6 +216,36 @@ export default function Checkout() {
               className="w-full border border-ink/15 rounded-xl px-4 py-2.5 focus:border-jollof outline-none"
             />
             {errors.address && <p className="text-jollof text-sm mt-1">{errors.address}</p>}
+
+            {form.orderType === "Delivery" && distancePricingAvailable && (
+              <div className="mt-3 bg-ink/5 rounded-xl px-4 py-3 text-sm">
+                {customerDistanceKm != null ? (
+                  <p className="text-ink/70">
+                    You're about <strong>{customerDistanceKm.toFixed(1)} km</strong> away — delivery
+                    fee: <strong>{formatNaira(fees.deliveryFee, settings.currencySymbol)}</strong>
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-ink/60 mb-2">
+                      Share your location for an accurate delivery fee based on distance, or skip
+                      to use the standard fee.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={useMyLocationForDelivery}
+                      className="text-xs bg-white border border-ink/15 hover:border-jollof px-4 py-1.5 rounded-full"
+                    >
+                      {locatingCustomer ? "Getting your location…" : "📍 Use my location"}
+                    </button>
+                    {locationDenied && (
+                      <p className="text-xs text-ink/40 mt-2">
+                        Couldn't access your location — using the standard delivery fee instead.
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
 
