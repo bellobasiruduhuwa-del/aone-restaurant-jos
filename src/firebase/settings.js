@@ -23,6 +23,8 @@ export const DEFAULT_SETTINGS = {
   whatsappNumber: "07066590000",
   email: "", // editable placeholder until the official email is provided
   openingHours: "8:00 AM – 12:00 AM",
+  openTime: "08:00",
+  closeTime: "00:00",
   currencySymbol: "\u20A6",
   takeawayFee: 200,
   deliveryFee: 500,

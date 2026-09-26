@@ -40,6 +40,8 @@ export default function RestaurantSettings() {
         whatsappNumber: form.whatsappNumber,
         email: form.email,
         openingHours: form.openingHours,
+        openTime: form.openTime,
+        closeTime: form.closeTime,
         logoUrl,
         socialLinks: form.socialLinks,
       });
@@ -137,12 +139,37 @@ export default function RestaurantSettings() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1.5">Opening hours</label>
+          <label className="block text-sm font-medium mb-1.5">Opening hours (shown to customers)</label>
           <input
             value={form.openingHours}
             onChange={(e) => update("openingHours", e.target.value)}
             className="w-full border border-ink/15 rounded-xl px-4 py-2.5 focus:border-jollof outline-none"
           />
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Opens at</label>
+            <input
+              type="time"
+              value={form.openTime || "08:00"}
+              onChange={(e) => update("openTime", e.target.value)}
+              className="w-full border border-ink/15 rounded-xl px-4 py-2.5 focus:border-jollof outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Closes at</label>
+            <input
+              type="time"
+              value={form.closeTime || "00:00"}
+              onChange={(e) => update("closeTime", e.target.value)}
+              className="w-full border border-ink/15 rounded-xl px-4 py-2.5 focus:border-jollof outline-none"
+            />
+          </div>
+          <p className="sm:col-span-2 text-xs text-ink/40 -mt-2">
+            These two control when ordering automatically closes on the site. Use 00:00 for
+            midnight. They're separate from the text above, which is just what customers read.
+          </p>
         </div>
 
         <div>

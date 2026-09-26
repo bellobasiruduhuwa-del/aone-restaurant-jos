@@ -5,6 +5,7 @@ import { useSettings } from "../context/SettingsContext";
 import { createOrder } from "../firebase/orders";
 import { buildWhatsAppOrderUrl } from "../utils/whatsapp";
 import { formatNaira, isValidNigerianPhone } from "../utils/format";
+import { isOpenNow } from "../utils/hours";
 
 const ORDER_TYPES = ["Dine-in", "Takeaway", "Delivery"];
 
@@ -12,6 +13,7 @@ export default function Checkout() {
   const { items, subtotal, clearCart } = useCart();
   const { settings } = useSettings();
   const navigate = useNavigate();
+  const restaurantOpen = isOpenNow(settings.openTime, settings.closeTime);
 
   const [form, setForm] = useState({
     customerName: "",
@@ -62,6 +64,7 @@ export default function Checkout() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!restaurantOpen) return;
     if (!validate()) return;
 
     setSubmitting(true);
@@ -212,13 +215,19 @@ export default function Checkout() {
         </div>
 
         {submitError && <p className="text-jollof text-sm">{submitError}</p>}
+        {!restaurantOpen && (
+          <p className="text-sm bg-ink/5 text-ink/70 rounded-xl px-4 py-3 text-center">
+            We're currently closed ({settings.openingHours}). You can't check out right now, but
+            your cart is saved — come back when we're open!
+          </p>
+        )}
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || !restaurantOpen}
           className="w-full bg-palm text-cream py-3.5 rounded-full font-medium hover:bg-palm-dark transition-colors disabled:opacity-60"
         >
-          {submitting ? "Placing order…" : "Checkout on WhatsApp"}
+          {!restaurantOpen ? "Currently closed" : submitting ? "Placing order…" : "Checkout on WhatsApp"}
         </button>
         <p className="text-xs text-ink/40 text-center">
           Your order is saved first, then WhatsApp opens with the details pre-filled — just hit send to confirm.

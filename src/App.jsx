@@ -7,6 +7,7 @@ import ChatWidget from "./components/ChatWidget";
 import CartToast from "./components/CartToast";
 import CartToast from "./components/CartToast";
 import FirebaseSetupNotice from "./components/FirebaseSetupNotice";
+import ClosedBanner from "./components/ClosedBanner";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
@@ -36,6 +37,7 @@ function CustomerLayout({ children }) {
   return (
     <div className="min-h-screen flex flex-col">
       <FirebaseSetupNotice />
+      <ClosedBanner />
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
