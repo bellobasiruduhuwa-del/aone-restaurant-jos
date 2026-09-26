@@ -14,6 +14,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Contact from "./pages/Contact";
+import Reviews from "./pages/Reviews";
 
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -26,6 +27,7 @@ import Reports from "./pages/admin/Reports";
 import DeliverySettings from "./pages/admin/DeliverySettings";
 import RestaurantSettings from "./pages/admin/RestaurantSettings";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminReviews from "./pages/admin/AdminReviews";
 import Profile from "./pages/admin/Profile";
 
 function CustomerLayout({ children }) {
@@ -52,6 +54,7 @@ export default function App() {
       <Route path="/cart" element={<CustomerLayout><Cart /></CustomerLayout>} />
       <Route path="/checkout" element={<CustomerLayout><Checkout /></CustomerLayout>} />
       <Route path="/contact" element={<CustomerLayout><Contact /></CustomerLayout>} />
+      <Route path="/reviews" element={<CustomerLayout><Reviews /></CustomerLayout>} />
 
       {/* Admin */}
       <Route path="/admin/login" element={<AdminLogin />} />
@@ -72,6 +75,7 @@ export default function App() {
         <Route path="delivery" element={<DeliverySettings />} />
         <Route path="settings" element={<RestaurantSettings />} />
         <Route path="admin-users" element={<AdminUsers />} />
+        <Route path="reviews" element={<AdminReviews />} />
         <Route path="profile" element={<Profile />} />
       </Route>
 

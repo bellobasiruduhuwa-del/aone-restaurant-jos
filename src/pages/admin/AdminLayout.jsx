@@ -9,6 +9,7 @@ const NAV = [
   { to: "/admin/categories", label: "Categories" },
   { to: "/admin/orders", label: "Orders" },
   { to: "/admin/customers", label: "Customers" },
+  { to: "/admin/reviews", label: "Reviews" },
   { to: "/admin/reports", label: "Reports" },
   { to: "/admin/delivery", label: "Delivery Settings" },
   { to: "/admin/settings", label: "Restaurant Settings" },

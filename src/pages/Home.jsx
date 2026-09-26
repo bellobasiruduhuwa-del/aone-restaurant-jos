@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { subscribeToProducts } from "../firebase/products";
+import { subscribeToReviews } from "../firebase/reviews";
 import { useSettings } from "../context/SettingsContext";
 import FoodCard from "../components/FoodCard";
 
@@ -12,11 +13,16 @@ const BENEFITS = [
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const { settings } = useSettings();
 
   useEffect(() => {
     const unsubscribe = subscribeToProducts(setProducts, () => setProducts([]));
-    return unsubscribe;
+    const unsubReviews = subscribeToReviews(setReviews, () => setReviews([]));
+    return () => {
+      unsubscribe();
+      unsubReviews();
+    };
   }, []);
 
   const featured = products.filter((p) => p.featured).slice(0, 4);
@@ -99,22 +105,35 @@ export default function Home() {
 
       {/* Reviews */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-        <h2 className="font-display text-2xl mb-6">What customers say</h2>
-        <div className="grid sm:grid-cols-3 gap-6">
-          {[
-            { name: "Chidinma O.", quote: "The jollof rice reminds me of home. Delivery to my office was quick." },
-            { name: "Musa A.", quote: "Best pepper soup in Jos, hands down. WhatsApp ordering is so easy." },
-            { name: "Grace T.", quote: "Combo meals are generous and the staff are always friendly." },
-          ].map((r) => (
-            <div key={r.name} className="border border-ink/10 rounded-2xl p-6 bg-white">
-              <p className="text-ink/70 text-sm mb-4">&ldquo;{r.quote}&rdquo;</p>
-              <p className="text-sm font-medium">{r.name}</p>
-            </div>
-          ))}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-display text-2xl">What customers say</h2>
+          <Link to="/reviews" className="text-sm text-jollof hover:underline">
+            See all reviews
+          </Link>
         </div>
-        <p className="text-xs text-ink/40 mt-4">
-          Sample reviews shown as placeholders — replace with real customer feedback from the Admin Dashboard.
-        </p>
+        {reviews.filter((r) => !r.parentId).length === 0 ? (
+          <div className="text-center py-10 border border-dashed border-ink/15 rounded-2xl">
+            <p className="text-ink/50 text-sm mb-3">No reviews yet — be the first to share yours!</p>
+            <Link to="/reviews" className="text-jollof text-sm font-medium hover:underline">
+              Leave a review
+            </Link>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-3 gap-6">
+            {reviews
+              .filter((r) => !r.parentId)
+              .slice(0, 3)
+              .map((r) => (
+                <div key={r.id} className="border border-ink/10 rounded-2xl p-6 bg-white">
+                  {r.rating && (
+                    <p className="text-gold text-sm mb-2">{"★".repeat(r.rating)}</p>
+                  )}
+                  <p className="text-ink/70 text-sm mb-4">&ldquo;{r.message}&rdquo;</p>
+                  <p className="text-sm font-medium">{r.name}</p>
+                </div>
+              ))}
+          </div>
+        )}
       </section>
     </div>
   );

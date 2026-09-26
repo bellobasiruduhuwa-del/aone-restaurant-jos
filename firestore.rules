@@ -48,10 +48,16 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
-    // REVIEWS: public read, signed-in create, admin moderate.
+    // REVIEWS: public read, public create (no customer login exists),
+    // admin moderate. Basic validation prevents obviously malformed spam.
     match /reviews/{reviewId} {
       allow read: if true;
-      allow create: if isSignedIn();
+      allow create: if request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 1000;
       allow update, delete: if isAdmin();
     }
 
