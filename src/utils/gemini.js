@@ -1,30 +1,21 @@
-// AI helper — powered by Groq (fast, free, reliable).
-// Calls Groq's API directly from the browser (no backend needed).
+// AI helper — powered by Groq (fast, free, reliable), via a server-side
+// proxy at /api/groq so the real API key never reaches the browser.
 // Function name kept as askGemini so every other file that imports it
 // (ChatWidget, Cart, Products) doesn't need to change at all.
 
-const GROQ_API_KEY = "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";
 const MODEL = "llama-3.3-70b-versatile";
 
 export async function askGemini(prompt, systemInstruction) {
-  const url = "https://api.groq.com/openai/v1/chat/completions";
-
   const messages = [];
   if (systemInstruction) {
     messages.push({ role: "system", content: systemInstruction });
   }
   messages.push({ role: "user", content: prompt });
 
-  const response = await fetch(url, {
+  const response = await fetch("/api/groq", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${GROQ_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages,
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ model: MODEL, messages }),
   });
 
   if (!response.ok) {
