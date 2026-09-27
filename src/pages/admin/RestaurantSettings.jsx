@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { updateSettings } from "../../firebase/settings";
-import { uploadImage } from "../../firebase/storage";
+import { uploadToImgbb } from "../../utils/imgbb";
+import { hexToRgbTriple, rgbTripleToHex } from "../../utils/color";
 import { useSettings } from "../../context/SettingsContext";
 
 export default function RestaurantSettings() {
@@ -35,7 +36,11 @@ export default function RestaurantSettings() {
     try {
       let logoUrl = form.logoUrl;
       if (logoFile) {
-        logoUrl = await uploadImage(logoFile, "logo");
+        logoUrl = await uploadToImgbb(logoFile);
+      }
+      let directorPhotoUrl = form.directorPhotoUrl;
+      if (directorPhotoFile) {
+        directorPhotoUrl = await uploadToImgbb(directorPhotoFile);
       }
       await updateSettings({
         brandName: form.brandName,
@@ -50,6 +55,11 @@ export default function RestaurantSettings() {
         openTime: form.openTime,
         closeTime: form.closeTime,
         logoUrl,
+        directorName: form.directorName,
+        directorTitle: form.directorTitle,
+        directorPhotoUrl,
+        directorMessage: form.directorMessage,
+        themeColors: form.themeColors,
         socialLinks: form.socialLinks,
       });
       setSaved(true);
@@ -188,7 +198,7 @@ export default function RestaurantSettings() {
             onChange={(e) => update("logoUrl", e.target.value)}
             className="w-full border border-ink/15 rounded-xl px-4 py-2.5 mb-2 text-sm focus:border-jollof outline-none"
           />
-          <p className="text-xs text-ink/40 mb-2">Or upload a file directly (requires Firebase Storage / Blaze plan):</p>
+          <p className="text-xs text-ink/40 mb-2">Or pick a photo from your phone to upload directly:</p>
           <input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} className="text-sm" />
           {(logoFile || form.logoUrl) && (
             <img
