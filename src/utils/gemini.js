@@ -3,7 +3,7 @@
 // Function name kept as askGemini so every other file that imports it
 // (ChatWidget, Cart, Products) doesn't need to change at all.
 
-const MODEL = "llama-3.3-70b-versatile";
+const MODEL = "openai/gpt-oss-120b";
 
 export async function askGemini(prompt, systemInstruction) {
   const messages = [];
