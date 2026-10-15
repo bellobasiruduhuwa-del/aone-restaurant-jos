@@ -67,6 +67,14 @@ export default function Home() {
               View Menu
             </Link>
           </div>
+          <img
+            src="https://images.unsplash.com/photo-1665332195309-9d75071138f0?auto=format&fit=crop&w=1200&q=70"
+            alt="A plate of jollof rice with grilled fish and vegetables"
+            width="1200"
+            height="700"
+            fetchpriority="high"
+            className="mt-9 w-full max-w-xl mx-auto h-48 sm:h-64 md:h-72 object-cover rounded-2xl shadow-lg"
+          />
         </div>
       </section>
 
