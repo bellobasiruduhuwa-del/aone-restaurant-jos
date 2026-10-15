@@ -108,7 +108,7 @@ export default function Home() {
       {featured.length > 0 && (
         <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
           <h2 className="font-display text-2xl mb-6">Featured today</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {featured.map((p) => (
               <FoodCard key={p.id} product={p} />
             ))}
@@ -129,7 +129,7 @@ export default function Home() {
             The menu will appear here as soon as products are added from the Admin Dashboard.
           </p>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {popular.map((p) => (
               <FoodCard key={p.id} product={p} />
             ))}

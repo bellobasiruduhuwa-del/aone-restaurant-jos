@@ -36,23 +36,26 @@ export default function FoodCard({ product }) {
         )}
       </Link>
 
-      <div className="p-4 flex flex-col flex-1">
-        <p className="text-xs text-palm-dark mb-1">{product.category}</p>
-        <Link to={`/menu/${product.id}`} className="font-display text-lg leading-snug mb-1 hover:text-jollof">
+      <div className="p-3 sm:p-4 flex flex-col flex-1">
+        <p className="text-[11px] sm:text-xs text-palm-dark mb-1">{product.category}</p>
+        <Link
+          to={`/menu/${product.id}`}
+          className="font-display text-base sm:text-lg leading-snug mb-1 hover:text-jollof line-clamp-2"
+        >
           {product.name}
         </Link>
         {product.description && (
-          <p className="text-sm text-ink/60 line-clamp-2 mb-3">{product.description}</p>
+          <p className="hidden sm:block text-sm text-ink/60 line-clamp-2 mb-3">{product.description}</p>
         )}
 
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <span className="font-display text-lg text-jollof">
+        <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pt-2">
+          <span className="font-display text-base sm:text-lg text-jollof">
             {formatNaira(product.price, settings.currencySymbol)}
           </span>
           <button
             onClick={() => addItem(product, 1)}
             disabled={!product.available}
-            className="text-sm bg-palm text-cream px-4 py-2 rounded-full hover:bg-palm-dark transition-colors disabled:bg-ink/20 disabled:cursor-not-allowed"
+            className="text-xs sm:text-sm bg-palm text-cream px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-palm-dark transition-colors disabled:bg-ink/20 disabled:cursor-not-allowed w-full sm:w-auto"
           >
             Add to cart
           </button>

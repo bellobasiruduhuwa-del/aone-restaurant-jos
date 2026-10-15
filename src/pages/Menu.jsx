@@ -113,7 +113,7 @@ export default function Menu() {
           No dishes match your search yet. Try a different keyword or category.
         </p>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
           {filtered.map((p) => (
             <FoodCard key={p.id} product={p} />
           ))}
