@@ -31,26 +31,38 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-b from-jollof/[0.06] to-transparent">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
-          <h1 className="font-display text-4xl sm:text-5xl leading-[1.1] mb-5">
-            Welcome to {settings.brandName}
+      <section className="relative overflow-hidden bg-gradient-to-b from-jollof/[0.08] via-jollof/[0.03] to-transparent">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-24 -right-24 w-72 h-72 rounded-full bg-jollof/10 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-20 -left-16 w-64 h-64 rounded-full bg-palm/10 blur-3xl"
+        />
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-20 text-center">
+          {settings.slogan && (
+            <span className="inline-block text-xs sm:text-sm tracking-wide uppercase text-jollof font-medium bg-jollof/10 rounded-full px-4 py-1 mb-4">
+              {settings.slogan}
+            </span>
+          )}
+          <h1 className="font-display text-3xl sm:text-5xl leading-[1.15] mb-4 text-balance">
+            Delicious Meals, Made With Love.
           </h1>
-          <p className="text-lg text-ink/70 mb-2">{settings.slogan}</p>
-          <p className="text-ink/60 mb-8 max-w-md mx-auto">
-            Enjoy delicious Nigerian meals, fast food, drinks, and special tea
-            at {settings.brandName}, Jos.
+          <p className="text-ink/60 text-base sm:text-lg mb-7 max-w-md mx-auto">
+            Enjoy delicious, fresh and affordable meals from{" "}
+            {settings.brandName || "AONE Restaurant Jos"}.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             <Link
               to="/menu"
-              className="bg-jollof text-cream px-7 py-3 rounded-full font-medium hover:bg-jollof-dark transition-colors"
+              className="bg-jollof text-cream px-6 sm:px-7 py-3 rounded-full font-medium text-sm sm:text-base hover:bg-jollof-dark transition-colors"
             >
               Order Now
             </Link>
             <Link
               to="/menu"
-              className="border border-ink/20 px-7 py-3 rounded-full font-medium hover:border-ink/50 transition-colors"
+              className="border border-ink/20 px-6 sm:px-7 py-3 rounded-full font-medium text-sm sm:text-base hover:border-ink/50 transition-colors"
             >
               View Menu
             </Link>
@@ -60,18 +72,24 @@ export default function Home() {
 
       {/* Director */}
       {settings.directorPhotoUrl && (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-          <div className="bg-white border border-ink/10 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+        <section className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+          <div className="bg-white border border-ink/10 rounded-2xl p-5 sm:p-7 flex flex-col sm:flex-row items-center gap-5 sm:gap-6 text-center sm:text-left">
             <img
               src={settings.directorPhotoUrl}
               alt={settings.directorName || "Director"}
-              className="w-28 h-28 rounded-full object-cover shrink-0 border-4 border-jollof/10"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover shrink-0 border-4 border-jollof/10"
             />
-            <div>
-              <p className="font-display text-xl">{settings.directorName}</p>
-              <p className="text-sm text-jollof mb-2">{settings.directorTitle}</p>
+            <div className="min-w-0">
+              <p className="font-display text-lg sm:text-xl text-balance leading-snug">
+                {settings.directorName}
+              </p>
+              <p className="text-sm text-jollof font-medium mb-2">
+                {settings.directorTitle || "Director General"}
+              </p>
               {settings.directorMessage && (
-                <p className="text-ink/70 text-sm">&ldquo;{settings.directorMessage}&rdquo;</p>
+                <p className="text-ink/70 text-sm sm:text-[15px] leading-relaxed">
+                  &ldquo;{settings.directorMessage}&rdquo;
+                </p>
               )}
             </div>
           </div>
