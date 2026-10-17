@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { subscribeToProducts } from "../firebase/products";
+import { subscribeToCategories } from "../firebase/categories";
 import { subscribeToReviews } from "../firebase/reviews";
 import { useSettings } from "../context/SettingsContext";
 import FoodCard from "../components/FoodCard";
@@ -13,20 +14,29 @@ const BENEFITS = [
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [reviews, setReviews] = useState([]);
   const { settings } = useSettings();
 
   useEffect(() => {
     const unsubscribe = subscribeToProducts(setProducts, () => setProducts([]));
+    const unsubCategories = subscribeToCategories(setCategories, () => setCategories([]));
     const unsubReviews = subscribeToReviews(setReviews, () => setReviews([]));
     return () => {
       unsubscribe();
+      unsubCategories();
       unsubReviews();
     };
   }, []);
 
   const featured = products.filter((p) => p.featured).slice(0, 4);
   const popular = products.slice(0, 8);
+
+  const categoryCards = categories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    imageUrl: products.find((p) => p.category === c.name && p.imageUrl)?.imageUrl || null,
+  }));
 
   return (
     <div>
@@ -77,6 +87,33 @@ export default function Home() {
           />
         </div>
       </section>
+
+      {/* Categories */}
+      {categoryCards.length > 0 && (
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+          <h2 className="font-display text-2xl mb-5">Browse by category</h2>
+          <div className="flex gap-5 overflow-x-auto pb-2 -mx-1 px-1">
+            {categoryCards.map((c) => (
+              <Link
+                key={c.id}
+                to={`/menu?category=${encodeURIComponent(c.name)}`}
+                className="flex flex-col items-center gap-2 shrink-0 w-20 text-center group"
+              >
+                <span className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-palm/10 border border-palm/15 flex items-center justify-center group-hover:border-palm/40 transition-colors">
+                  {c.imageUrl ? (
+                    <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="font-display text-lg text-palm-dark">
+                      {c.name.charAt(0)}
+                    </span>
+                  )}
+                </span>
+                <span className="text-xs text-ink/70 line-clamp-2">{c.name}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Director */}
       {settings.directorPhotoUrl && (

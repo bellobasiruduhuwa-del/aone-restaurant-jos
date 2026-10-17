@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useSettings } from "../context/SettingsContext";
@@ -7,6 +7,7 @@ import { formatNaira } from "../utils/format";
 export default function FoodCard({ product }) {
   const { addItem } = useCart();
   const { settings } = useSettings();
+  const [quantity, setQuantity] = useState(1);
 
   return (
     <div className="group border border-ink/10 rounded-2xl overflow-hidden bg-white flex flex-col">
@@ -48,14 +49,40 @@ export default function FoodCard({ product }) {
           <p className="hidden sm:block text-sm text-ink/60 line-clamp-2 mb-3">{product.description}</p>
         )}
 
-        <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between pt-2">
-          <span className="font-display text-base sm:text-lg text-jollof">
-            {formatNaira(product.price, settings.currencySymbol)}
-          </span>
+        <div className="mt-auto pt-2">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-display text-base sm:text-lg text-jollof">
+              {formatNaira(product.price, settings.currencySymbol)}
+            </span>
+            <div className="flex items-center gap-1.5 border border-ink/15 rounded-full px-1">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                disabled={!product.available}
+                aria-label="Decrease quantity"
+                className="w-6 h-6 flex items-center justify-center text-ink/60 hover:text-jollof disabled:opacity-40"
+              >
+                −
+              </button>
+              <span className="w-5 text-center text-sm font-medium">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => q + 1)}
+                disabled={!product.available}
+                aria-label="Increase quantity"
+                className="w-6 h-6 flex items-center justify-center text-ink/60 hover:text-jollof disabled:opacity-40"
+              >
+                +
+              </button>
+            </div>
+          </div>
           <button
-            onClick={() => addItem(product, 1)}
+            onClick={() => {
+              addItem(product, quantity);
+              setQuantity(1);
+            }}
             disabled={!product.available}
-            className="text-xs sm:text-sm bg-palm text-cream px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-palm-dark transition-colors disabled:bg-ink/20 disabled:cursor-not-allowed w-full sm:w-auto"
+            className="text-xs sm:text-sm bg-palm text-cream px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-palm-dark transition-colors disabled:bg-ink/20 disabled:cursor-not-allowed w-full"
           >
             Add to cart
           </button>

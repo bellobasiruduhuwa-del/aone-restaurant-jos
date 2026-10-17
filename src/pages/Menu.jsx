@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { subscribeToProducts } from "../firebase/products";
 import { subscribeToCategories } from "../firebase/categories";
+import { useSettings } from "../context/SettingsContext";
+import { toWhatsAppNumber } from "../utils/format";
 import FoodCard from "../components/FoodCard";
 
 const SORT_OPTIONS = [
@@ -11,6 +14,8 @@ const SORT_OPTIONS = [
 ];
 
 export default function Menu() {
+  const { settings } = useSettings();
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
@@ -25,6 +30,13 @@ export default function Menu() {
       unsubCategories();
     };
   }, []);
+
+  // Deep-link support: /menu?category=Drinks preselects that category,
+  // e.g. when arriving from the homepage category circles.
+  useEffect(() => {
+    const catParam = searchParams.get("category");
+    if (catParam) setActiveCategory(catParam);
+  }, [searchParams]);
 
   const filtered = useMemo(() => {
     let list = [...products];
@@ -119,6 +131,25 @@ export default function Menu() {
           ))}
         </div>
       )}
+
+      <div className="mt-10 bg-palm/5 border border-palm/15 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <p className="font-display text-xl text-palm-dark mb-1">Fast Delivery & Take Away</p>
+          <p className="text-sm text-ink/60">
+            Order ahead and we'll have it ready — delivered to you or packed for pickup.
+          </p>
+        </div>
+        <a
+          href={`https://wa.me/${toWhatsAppNumber(settings.whatsappNumber)}?text=${encodeURIComponent(
+            `Hello ${settings.brandName}, I'd like to place an order.`
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 bg-palm text-cream px-6 py-3 rounded-full text-sm font-medium hover:bg-palm-dark transition-colors whitespace-nowrap"
+        >
+          Order on WhatsApp
+        </a>
+      </div>
     </div>
   );
 }

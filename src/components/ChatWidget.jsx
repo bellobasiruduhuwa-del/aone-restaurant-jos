@@ -68,14 +68,14 @@ export default function ChatWidget() {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-24 right-5 z-50 bg-palm text-cream w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl"
+        className="fixed bottom-[156px] md:bottom-24 right-5 z-50 bg-palm text-cream w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl"
         aria-label="Chat with us"
       >
         {open ? "✕" : "💬"}
       </button>
 
       {open && (
-        <div className="fixed bottom-40 right-5 z-50 w-[90vw] max-w-sm h-[60vh] bg-white rounded-2xl shadow-2xl border border-ink/10 flex flex-col overflow-hidden">
+        <div className="fixed bottom-[220px] md:bottom-40 right-5 z-50 w-[90vw] max-w-sm h-[60vh] bg-white rounded-2xl shadow-2xl border border-ink/10 flex flex-col overflow-hidden">
           <div className="bg-palm text-cream px-4 py-3 font-display">Ask AONE 🍽️</div>
           <div className="flex-1 overflow-y-auto p-3 space-y-2">
             {messages.map((m, i) => (

@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton";
 import ChatWidget from "./components/ChatWidget";
 import CartToast from "./components/CartToast";
+import BottomTabBar from "./components/BottomTabBar";
 import FirebaseSetupNotice from "./components/FirebaseSetupNotice";
 import ClosedBanner from "./components/ClosedBanner";
 import ThemeApplier from "./components/ThemeApplier";
@@ -36,7 +37,7 @@ import Profile from "./pages/admin/Profile";
 
 function CustomerLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-16 md:pb-0">
       <FirebaseSetupNotice />
       <ClosedBanner />
       <Navbar />
@@ -45,6 +46,7 @@ function CustomerLayout({ children }) {
       <WhatsAppButton />
       <ChatWidget />
       <CartToast />
+      <BottomTabBar />
     </div>
   );
 }

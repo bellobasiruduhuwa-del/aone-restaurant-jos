@@ -19,17 +19,22 @@ export default function Navbar() {
 
   const linkClass = ({ isActive }) =>
     `text-sm tracking-wide transition-colors ${
+      isActive ? "text-gold font-semibold" : "text-cream/85 hover:text-cream"
+    }`;
+
+  const mobileLinkClass = ({ isActive }) =>
+    `text-sm tracking-wide transition-colors ${
       isActive ? "text-jollof font-semibold" : "text-ink/80 hover:text-jollof"
     }`;
 
   return (
-    <header className="sticky top-0 z-40 bg-cream/95 backdrop-blur border-b border-ink/10">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <header className="sticky top-0 z-40 bg-palm">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 relative z-10">
         <Link to="/" className="flex items-center gap-2 shrink-0" onClick={() => setOpen(false)}>
           <span className="w-9 h-9 rounded-full bg-jollof text-cream flex items-center justify-center font-display font-bold text-sm">
             A1
           </span>
-          <span className="font-display font-semibold text-lg text-ink leading-none">
+          <span className="font-display font-semibold text-lg text-cream leading-none">
             {settings.brandName || "AONE RESTAURANT"}
           </span>
         </Link>
@@ -45,7 +50,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           <Link
             to="/cart"
-            className="relative flex items-center gap-2 border border-ink/15 rounded-full pl-4 pr-3 py-1.5 text-sm hover:border-jollof transition-colors"
+            className="relative flex items-center gap-2 border border-cream/30 text-cream rounded-full pl-4 pr-3 py-1.5 text-sm hover:border-cream/60 transition-colors"
           >
             Cart
             {itemCount > 0 && (
@@ -71,7 +76,7 @@ export default function Navbar() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-ink"
+              className="text-cream"
             >
               <circle cx="9" cy="21" r="1" />
               <circle cx="20" cy="21" r="1" />
@@ -89,12 +94,24 @@ export default function Navbar() {
             aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
           >
-            <div className="w-6 h-0.5 bg-ink mb-1.5" />
-            <div className="w-6 h-0.5 bg-ink mb-1.5" />
-            <div className="w-6 h-0.5 bg-ink" />
+            <div className="w-6 h-0.5 bg-cream mb-1.5" />
+            <div className="w-6 h-0.5 bg-cream mb-1.5" />
+            <div className="w-6 h-0.5 bg-cream" />
           </button>
         </div>
       </div>
+
+      {/* Curved bottom edge — pure CSS/SVG shape, no fixed logo or brand asset */}
+      {!open && (
+        <svg
+          className="block w-full h-4 sm:h-5 -mb-px text-cream"
+          viewBox="0 0 100 10"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path d="M0,0 Q50,10 100,0 L100,10 L0,10 Z" fill="currentColor" />
+        </svg>
+      )}
 
       {open && (
         <nav className="md:hidden border-t border-ink/10 bg-cream px-4 pb-4 flex flex-col gap-3">
@@ -103,7 +120,7 @@ export default function Navbar() {
               key={l.to}
               to={l.to}
               end={l.to === "/"}
-              className={linkClass}
+              className={mobileLinkClass}
               onClick={() => setOpen(false)}
             >
               {l.label}
