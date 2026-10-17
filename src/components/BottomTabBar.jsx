@@ -59,7 +59,15 @@ export default function BottomTabBar() {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-ink/10 flex items-stretch md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      style={{
+        paddingBottom: "env(safe-area-inset-bottom)",
+        // Forces the phone's browser to render this bar on its own fast layer,
+        // so it stays glued to the bottom instead of visually lagging/scrolling
+        // along with the page for a moment during a fast scroll.
+        transform: "translateZ(0)",
+        WebkitTransform: "translateZ(0)",
+        willChange: "transform",
+      }}
     >
       {TABS.map((tab) => (
         <NavLink
