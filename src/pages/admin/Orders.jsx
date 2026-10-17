@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { subscribeToOrders, updateOrderStatus, deleteOrder, ORDER_STATUSES } from "../../firebase/orders";
 import { useSettings } from "../../context/SettingsContext";
 import { formatNaira } from "../../utils/format";
@@ -9,28 +9,10 @@ function toDate(timestamp) {
   return new Date(timestamp);
 }
 
-/** Short two-tone beep, generated on the fly — no audio file needed. */
-function playNewOrderSound() {
-  try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    [880, 1100].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = freq;
-      gain.gain.value = 0.18;
-      const start = ctx.currentTime + i * 0.18;
-      osc.start(start);
-      osc.stop(start + 0.16);
-    });
-    setTimeout(() => ctx.close(), 500);
-  } catch {
-    // Sound is a nice-to-have, never worth breaking the page over.
-  }
-}
+// The new-order beep + browser notification now live in NewOrderWatcher
+// (mounted once in AdminLayout, so it fires no matter which admin page is
+// open) instead of here, so the admin doesn't get a double-beep when this
+// specific page happens to be the one open.
 
 const STATUS_COLORS = {
   Pending: "bg-gold/15 text-gold",
@@ -48,24 +30,9 @@ export default function Orders() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [expandedId, setExpandedId] = useState(null);
   const { settings } = useSettings();
-  const knownOrderIds = useRef(null);
 
   useEffect(
-    () =>
-      subscribeToOrders(
-        (data) => {
-          // Skip the very first snapshot (that's just the existing orders
-          // loading in) and only beep once we can see a truly *new* one
-          // arrive while the page is open.
-          if (knownOrderIds.current) {
-            const hasNewOrder = data.some((o) => !knownOrderIds.current.has(o.id));
-            if (hasNewOrder) playNewOrderSound();
-          }
-          knownOrderIds.current = new Set(data.map((o) => o.id));
-          setOrders(data);
-        },
-        () => setOrders([])
-      ),
+    () => subscribeToOrders((data) => setOrders(data), () => setOrders([])),
     []
   );
 

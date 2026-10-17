@@ -4,6 +4,7 @@ import { subscribeToProducts } from "../../firebase/products";
 import { subscribeToOrders } from "../../firebase/orders";
 import { useSettings } from "../../context/SettingsContext";
 import { formatNaira } from "../../utils/format";
+import { downloadFullBackup } from "../../utils/backupExport";
 
 function startOf(period) {
   const now = new Date();
@@ -27,7 +28,20 @@ function toDate(timestamp) {
 export default function Dashboard() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [backingUp, setBackingUp] = useState(false);
   const { settings } = useSettings();
+
+  async function handleBackup() {
+    setBackingUp(true);
+    try {
+      await downloadFullBackup();
+    } catch (err) {
+      console.error(err);
+      alert("Couldn't create the backup file. Please check your connection and try again.");
+    } finally {
+      setBackingUp(false);
+    }
+  }
 
   useEffect(() => {
     const unsubProducts = subscribeToProducts(setProducts, () => setProducts([]));
@@ -118,7 +132,19 @@ export default function Dashboard() {
         <Link to="/admin/orders" className="text-sm border border-ink/15 px-5 py-2.5 rounded-full hover:border-ink/40">
           View orders
         </Link>
+        <button
+          onClick={handleBackup}
+          disabled={backingUp}
+          className="text-sm border border-ink/15 px-5 py-2.5 rounded-full hover:border-ink/40 disabled:opacity-60"
+        >
+          {backingUp ? "Preparing backup…" : "⬇ Download backup"}
+        </button>
       </div>
+      <p className="text-xs text-ink/40 mt-3">
+        Downloads a copy of all orders, products, categories and reviews as one file — worth
+        doing every so often and saving it somewhere safe (email it to yourself, save to Google
+        Drive, etc.).
+      </p>
     </div>
   );
 }

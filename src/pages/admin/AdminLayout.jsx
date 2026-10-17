@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { logoutAdmin } from "../../firebase/auth";
 import { useAuth } from "../../context/AuthContext";
+import NewOrderWatcher from "../../components/NewOrderWatcher";
 
 const NAV = [
   { to: "/admin", label: "Dashboard", end: true },
@@ -34,6 +35,7 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-cream">
+      <NewOrderWatcher />
       <button
         className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-ink/10 bg-white"
         onClick={() => setMenuOpen((o) => !o)}

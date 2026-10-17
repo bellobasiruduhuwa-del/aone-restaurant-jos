@@ -2,6 +2,34 @@ import React, { useEffect, useMemo, useState } from "react";
 import { subscribeToReviews, createReview, createReply } from "../firebase/reviews";
 import { useLanguage } from "../context/LanguageContext";
 
+// Light, no-backend spam guardrails. Neither of these stops a determined
+// bot, but together they cut down on the casual spam/bot traffic that a
+// completely open, no-login review form otherwise attracts:
+//  1. A honeypot field: invisible to real people, but most simple bots
+//     fill in every field they find. If it's non-empty, we silently drop
+//     the submission instead of posting it.
+//  2. A per-browser cooldown: blocks posting again within COOLDOWN_MS of
+//     the last post from this same browser.
+const COOLDOWN_MS = 30_000;
+const COOLDOWN_KEY = "aone_last_review_post";
+
+function isOnCooldown() {
+  try {
+    const last = Number(localStorage.getItem(COOLDOWN_KEY) || 0);
+    return Date.now() - last < COOLDOWN_MS;
+  } catch {
+    return false;
+  }
+}
+
+function startCooldown() {
+  try {
+    localStorage.setItem(COOLDOWN_KEY, String(Date.now()));
+  } catch {
+    /* if storage is blocked, we just skip the cooldown — not worth failing over */
+  }
+}
+
 function timeAgo(ts) {
   if (!ts?.toDate) return "";
   const diffMs = Date.now() - ts.toDate().getTime();
@@ -28,14 +56,21 @@ function ReplyForm({ parentId, onDone }) {
   const { t } = useLanguage();
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot — real visitors never see or fill this
   const [saving, setSaving] = useState(false);
 
   async function submit(e) {
     e.preventDefault();
     if (!name.trim() || !message.trim()) return;
+    if (website.trim()) return; // honeypot tripped — silently drop, no error shown
+    if (isOnCooldown()) {
+      alert("Please wait a few seconds before posting again.");
+      return;
+    }
     setSaving(true);
     try {
       await createReply({ name, message, parentId });
+      startCooldown();
       setName("");
       setMessage("");
       onDone?.();
@@ -49,6 +84,16 @@ function ReplyForm({ parentId, onDone }) {
 
   return (
     <form onSubmit={submit} className="mt-3 flex flex-col gap-2">
+      <input
+        type="text"
+        name="website"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        className="hidden"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+      />
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -119,6 +164,7 @@ export default function Reviews() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(5);
+  const [website, setWebsite] = useState(""); // honeypot — real visitors never see or fill this
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -133,9 +179,15 @@ export default function Reviews() {
   async function submitReview(e) {
     e.preventDefault();
     if (!name.trim() || !message.trim()) return;
+    if (website.trim()) return; // honeypot tripped — silently drop, no error shown
+    if (isOnCooldown()) {
+      alert("Please wait a few seconds before posting again.");
+      return;
+    }
     setSaving(true);
     try {
       await createReview({ name, message, rating });
+      startCooldown();
       setName("");
       setMessage("");
       setRating(5);
@@ -154,6 +206,16 @@ export default function Reviews() {
 
       <form onSubmit={submitReview} className="bg-white border border-ink/10 rounded-2xl p-6 mb-10 space-y-3">
         <h2 className="font-display text-lg mb-1">{t("reviews_leave_review")}</h2>
+        <input
+          type="text"
+          name="website"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          className="hidden"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+        />
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
