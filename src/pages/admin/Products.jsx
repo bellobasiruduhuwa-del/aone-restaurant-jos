@@ -8,6 +8,7 @@ import {
 } from "../../firebase/products";
 import { subscribeToCategories, createCategory } from "../../firebase/categories";
 import { uploadToImgbb } from "../../utils/imgbb";
+import { compressImage } from "../../utils/imageCompress";
 import { askGemini } from "../../utils/gemini";
 import { useSettings } from "../../context/SettingsContext";
 import { formatNaira } from "../../utils/format";
@@ -81,7 +82,10 @@ export default function Products() {
     try {
       let imageUrl = form.imageUrl;
       if (imageFile) {
-        imageUrl = await uploadToImgbb(imageFile);
+        // Shrink large phone-camera photos before uploading, so the
+        // customer-facing site loads faster on slow mobile data.
+        const compressed = await compressImage(imageFile);
+        imageUrl = await uploadToImgbb(compressed);
       }
 
       const payload = { ...form, imageUrl };

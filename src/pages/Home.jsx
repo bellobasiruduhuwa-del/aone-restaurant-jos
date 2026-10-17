@@ -5,6 +5,7 @@ import { subscribeToCategories } from "../firebase/categories";
 import { subscribeToReviews } from "../firebase/reviews";
 import { useSettings } from "../context/SettingsContext";
 import FoodCard from "../components/FoodCard";
+import SkeletonCard from "../components/SkeletonCard";
 
 const BENEFITS = [
   { title: "Made fresh, daily", body: "Every pot is cooked to order from ingredients sourced around Jos." },
@@ -16,10 +17,20 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const { settings } = useSettings();
 
   useEffect(() => {
-    const unsubscribe = subscribeToProducts(setProducts, () => setProducts([]));
+    const unsubscribe = subscribeToProducts(
+      (data) => {
+        setProducts(data);
+        setLoadingProducts(false);
+      },
+      () => {
+        setProducts([]);
+        setLoadingProducts(false);
+      }
+    );
     const unsubCategories = subscribeToCategories(setCategories, () => setCategories([]));
     const unsubReviews = subscribeToReviews(setReviews, () => setReviews([]));
     return () => {
@@ -31,6 +42,12 @@ export default function Home() {
 
   const featured = products.filter((p) => p.featured).slice(0, 4);
   const popular = products.slice(0, 8);
+
+  const topLevelReviews = reviews.filter((r) => !r.parentId);
+  const ratedReviews = topLevelReviews.filter((r) => r.rating);
+  const avgRating = ratedReviews.length
+    ? ratedReviews.reduce((sum, r) => sum + r.rating, 0) / ratedReviews.length
+    : null;
 
   const categoryCards = categories.map((c) => ({
     id: c.id,
@@ -77,6 +94,15 @@ export default function Home() {
               View Menu
             </Link>
           </div>
+          {avgRating && (
+            <p className="mt-4 text-sm text-gold font-medium">
+              {"★".repeat(Math.round(avgRating))}
+              {"☆".repeat(5 - Math.round(avgRating))}{" "}
+              <span className="text-ink/50">
+                {avgRating.toFixed(1)} · {ratedReviews.length} review{ratedReviews.length === 1 ? "" : "s"}
+              </span>
+            </p>
+          )}
           <img
             src="https://images.unsplash.com/photo-1665332195309-9d75071138f0?auto=format&fit=crop&w=1200&q=70"
             alt="A plate of jollof rice with grilled fish and vegetables"
@@ -161,7 +187,13 @@ export default function Home() {
             See full menu
           </Link>
         </div>
-        {popular.length === 0 ? (
+        {loadingProducts ? (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : popular.length === 0 ? (
           <p className="text-ink/50 text-sm">
             The menu will appear here as soon as products are added from the Admin Dashboard.
           </p>
@@ -189,12 +221,23 @@ export default function Home() {
       {/* Reviews */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-display text-2xl">What customers say</h2>
+          <div>
+            <h2 className="font-display text-2xl">What customers say</h2>
+            {avgRating && (
+              <p className="text-sm text-gold mt-1">
+                {"★".repeat(Math.round(avgRating))}
+                {"☆".repeat(5 - Math.round(avgRating))}{" "}
+                <span className="text-ink/50">
+                  {avgRating.toFixed(1)} · {ratedReviews.length} review{ratedReviews.length === 1 ? "" : "s"}
+                </span>
+              </p>
+            )}
+          </div>
           <Link to="/reviews" className="text-sm text-jollof hover:underline">
             See all reviews
           </Link>
         </div>
-        {reviews.filter((r) => !r.parentId).length === 0 ? (
+        {topLevelReviews.length === 0 ? (
           <div className="text-center py-10 border border-dashed border-ink/15 rounded-2xl">
             <p className="text-ink/50 text-sm mb-3">No reviews yet — be the first to share yours!</p>
             <Link to="/reviews" className="text-jollof text-sm font-medium hover:underline">
@@ -203,8 +246,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="grid sm:grid-cols-3 gap-6">
-            {reviews
-              .filter((r) => !r.parentId)
+            {topLevelReviews
               .slice(0, 3)
               .map((r) => (
                 <div key={r.id} className="border border-ink/10 rounded-2xl p-6 bg-white">

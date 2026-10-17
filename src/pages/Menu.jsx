@@ -5,6 +5,7 @@ import { subscribeToCategories } from "../firebase/categories";
 import { useSettings } from "../context/SettingsContext";
 import { toWhatsAppNumber } from "../utils/format";
 import FoodCard from "../components/FoodCard";
+import SkeletonCard from "../components/SkeletonCard";
 
 const SORT_OPTIONS = [
   { value: "popular", label: "Most popular" },
@@ -21,9 +22,19 @@ export default function Menu() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [sort, setSort] = useState("popular");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubProducts = subscribeToProducts(setProducts, () => setProducts([]));
+    const unsubProducts = subscribeToProducts(
+      (data) => {
+        setProducts(data);
+        setLoading(false);
+      },
+      () => {
+        setProducts([]);
+        setLoading(false);
+      }
+    );
     const unsubCategories = subscribeToCategories(setCategories, () => setCategories([]));
     return () => {
       unsubProducts();
@@ -120,7 +131,13 @@ export default function Menu() {
         ))}
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
         <p className="text-ink/50 text-sm py-16 text-center">
           No dishes match your search yet. Try a different keyword or category.
         </p>
