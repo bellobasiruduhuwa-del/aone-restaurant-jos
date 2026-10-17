@@ -10,6 +10,8 @@ import FirebaseSetupNotice from "./components/FirebaseSetupNotice";
 import ClosedBanner from "./components/ClosedBanner";
 import ThemeApplier from "./components/ThemeApplier";
 import ProtectedRoute from "./components/ProtectedRoute";
+import LanguagePicker from "./components/LanguagePicker";
+import { useLanguage } from "./context/LanguageContext";
 
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -36,6 +38,14 @@ import AdminReviews from "./pages/admin/AdminReviews";
 import Profile from "./pages/admin/Profile";
 
 function CustomerLayout({ children }) {
+  const { languageChosen } = useLanguage();
+
+  // Block every customer-facing screen behind the language picker until
+  // a choice has been made (once per phone/browser — remembered after).
+  if (!languageChosen) {
+    return <LanguagePicker />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col pb-16 md:pb-0">
       <FirebaseSetupNotice />

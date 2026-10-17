@@ -2,20 +2,24 @@ import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useSettings } from "../context/SettingsContext";
-
-const links = [
-  { to: "/", label: "Home" },
-  { to: "/about", label: "About Us" },
-  { to: "/menu", label: "Menu" },
-  { to: "/reviews", label: "Reviews" },
-  { to: "/track", label: "Track Order" },
-  { to: "/contact", label: "Contact Us" },
-];
+import { useLanguage } from "../context/LanguageContext";
+import LanguagePicker from "./LanguagePicker";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [showLangPicker, setShowLangPicker] = useState(false);
   const { itemCount } = useCart();
   const { settings } = useSettings();
+  const { t } = useLanguage();
+
+  const links = [
+    { to: "/", label: t("nav_home") },
+    { to: "/about", label: t("nav_about") },
+    { to: "/menu", label: t("nav_menu") },
+    { to: "/reviews", label: t("nav_reviews") },
+    { to: "/track", label: t("nav_track") },
+    { to: "/contact", label: t("nav_contact") },
+  ];
 
   const linkClass = ({ isActive }) =>
     `text-sm tracking-wide transition-colors ${
@@ -47,12 +51,23 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
+          <button
+            onClick={() => setShowLangPicker(true)}
+            aria-label="Change language"
+            title="Change language"
+            className="w-9 h-9 rounded-full border border-cream/30 text-cream flex items-center justify-center hover:border-cream/60 transition-colors"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z" />
+            </svg>
+          </button>
           <Link
             to="/cart"
             className="relative flex items-center gap-2 border border-cream/30 text-cream rounded-full pl-4 pr-3 py-1.5 text-sm hover:border-cream/60 transition-colors"
           >
-            Cart
+            {t("nav_cart")}
             {itemCount > 0 && (
               <span className="w-5 h-5 rounded-full bg-jollof text-cream text-xs flex items-center justify-center">
                 {itemCount}
@@ -62,6 +77,16 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-1 md:hidden">
+          <button
+            onClick={() => setShowLangPicker(true)}
+            aria-label="Change language"
+            className="p-2 text-cream"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z" />
+            </svg>
+          </button>
           <Link
             to="/cart"
             className="relative p-2"
@@ -127,6 +152,10 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
+      )}
+
+      {showLangPicker && (
+        <LanguagePicker standalone onDone={() => setShowLangPicker(false)} />
       )}
     </header>
   );

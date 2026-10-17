@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Footer() {
   const { settings } = useSettings();
+  const { t } = useLanguage();
 
   return (
     <footer className="bg-ink text-cream/90 mt-24">
@@ -14,19 +16,19 @@ export default function Footer() {
         </div>
 
         <div className="text-sm space-y-1.5">
-          <p className="text-cream/60 mb-1">Visit us</p>
+          <p className="text-cream/60 mb-1">{t("footer_visit")}</p>
           <p>{settings.address}</p>
           <p>{settings.openingHours} daily</p>
         </div>
 
         <div className="text-sm space-y-1.5">
-          <p className="text-cream/60 mb-1">Get in touch</p>
+          <p className="text-cream/60 mb-1">{t("footer_contact")}</p>
           <p>{settings.phone1}</p>
           <p>{settings.phone2}</p>
           {settings.email && <p>{settings.email}</p>}
           <div className="flex gap-3 pt-2">
             <Link to="/menu" className="underline decoration-jollof-light underline-offset-4 hover:text-jollof-light">
-              Order online
+              {t("footer_order_online")}
             </Link>
           </div>
         </div>

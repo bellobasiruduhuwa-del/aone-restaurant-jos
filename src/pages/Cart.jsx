@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useSettings } from "../context/SettingsContext";
+import { useLanguage } from "../context/LanguageContext";
 import { formatNaira } from "../utils/format";
 import { subscribeToProducts } from "../firebase/products";
 import { askGemini } from "../utils/gemini";
@@ -9,6 +10,7 @@ import { askGemini } from "../utils/gemini";
 export default function Cart() {
   const { items, subtotal, increment, decrement, removeItem, addItem } = useCart();
   const { settings } = useSettings();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
@@ -65,10 +67,10 @@ export default function Cart() {
   if (items.length === 0) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-24 text-center">
-        <h1 className="font-display text-3xl mb-3">Your cart is empty</h1>
-        <p className="text-ink/60 mb-8">Add something delicious from the menu to get started.</p>
+        <h1 className="font-display text-3xl mb-3">{t("cart_empty_title")}</h1>
+        <p className="text-ink/60 mb-8">{t("cart_empty_body")}</p>
         <Link to="/menu" className="bg-jollof text-cream px-6 py-3 rounded-full font-medium hover:bg-jollof-dark">
-          Browse the menu
+          {t("cart_browse_menu")}
         </Link>
       </div>
     );
@@ -76,7 +78,7 @@ export default function Cart() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
-      <h1 className="font-display text-3xl mb-8">Your Cart</h1>
+      <h1 className="font-display text-3xl mb-8">{t("cart_title")}</h1>
 
       <div className="divide-y divide-ink/10 border-y border-ink/10 mb-8">
         {items.map((item) => (
@@ -89,7 +91,7 @@ export default function Cart() {
             <div className="flex-1 min-w-0">
               <p className="font-medium truncate">{item.name}</p>
               <p className="text-sm text-ink/50">
-                {formatNaira(item.price, settings.currencySymbol)} each
+                {formatNaira(item.price, settings.currencySymbol)} {t("cart_each")}
               </p>
             </div>
             <div className="flex items-center border border-ink/15 rounded-full">
@@ -109,7 +111,7 @@ export default function Cart() {
               aria-label={`Remove ${item.name}`}
               className="text-ink/30 hover:text-jollof text-sm"
             >
-              Remove
+              {t("cart_remove")}
             </button>
           </div>
         ))}
@@ -118,7 +120,7 @@ export default function Cart() {
       {(loadingSuggestions || suggestions.length > 0) && (
         <div className="mb-8">
           <p className="text-sm font-medium text-ink/60 mb-3">
-            {loadingSuggestions ? "Finding things that go well together…" : "Goes well with your order"}
+            {loadingSuggestions ? t("cart_finding_suggestions") : t("cart_goes_well")}
           </p>
           <div className="flex gap-3 overflow-x-auto pb-1">
             {suggestions.map((p) => (
@@ -136,7 +138,7 @@ export default function Cart() {
                     onClick={() => addItem(p, 1)}
                     className="w-full text-xs bg-jollof/10 text-jollof hover:bg-jollof hover:text-cream rounded-full py-1.5 transition-colors"
                   >
-                    Add
+                    {t("cart_add")}
                   </button>
                 </div>
               </div>
@@ -146,7 +148,7 @@ export default function Cart() {
       )}
 
       <div className="flex justify-between items-center mb-8">
-        <span className="text-ink/60">Subtotal</span>
+        <span className="text-ink/60">{t("cart_subtotal")}</span>
         <span className="font-display text-xl">{formatNaira(subtotal, settings.currencySymbol)}</span>
       </div>
 
@@ -154,7 +156,7 @@ export default function Cart() {
         onClick={() => navigate("/checkout")}
         className="w-full bg-jollof text-cream py-3.5 rounded-full font-medium hover:bg-jollof-dark transition-colors"
       >
-        Proceed to checkout
+        {t("cart_checkout")}
       </button>
     </div>
   );

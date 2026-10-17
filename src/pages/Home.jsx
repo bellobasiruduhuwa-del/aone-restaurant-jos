@@ -4,14 +4,9 @@ import { subscribeToProducts } from "../firebase/products";
 import { subscribeToCategories } from "../firebase/categories";
 import { subscribeToReviews } from "../firebase/reviews";
 import { useSettings } from "../context/SettingsContext";
+import { useLanguage } from "../context/LanguageContext";
 import FoodCard from "../components/FoodCard";
 import SkeletonCard from "../components/SkeletonCard";
-
-const BENEFITS = [
-  { title: "Made fresh, daily", body: "Every pot is cooked to order from ingredients sourced around Jos." },
-  { title: "Fast in and out", body: "Dine-in, takeaway, or delivery — order ahead on WhatsApp and skip the wait." },
-  { title: "Real Nigerian flavour", body: "Jollof, swallow, pepper soup, and combos made the way you actually want them." },
-];
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -19,6 +14,13 @@ export default function Home() {
   const [reviews, setReviews] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const { settings } = useSettings();
+  const { t } = useLanguage();
+
+  const BENEFITS = [
+    { title: t("home_benefit1_title"), body: t("home_benefit1_body") },
+    { title: t("home_benefit2_title"), body: t("home_benefit2_body") },
+    { title: t("home_benefit3_title"), body: t("home_benefit3_body") },
+  ];
 
   useEffect(() => {
     const unsubscribe = subscribeToProducts(
@@ -48,6 +50,7 @@ export default function Home() {
   const avgRating = ratedReviews.length
     ? ratedReviews.reduce((sum, r) => sum + r.rating, 0) / ratedReviews.length
     : null;
+  const reviewWord = t(ratedReviews.length === 1 ? "review_singular" : "review_plural");
 
   const categoryCards = categories.map((c) => ({
     id: c.id,
@@ -74,24 +77,23 @@ export default function Home() {
             </span>
           )}
           <h1 className="font-display text-3xl sm:text-5xl leading-[1.15] mb-4 text-balance">
-            Delicious Meals, Made With Love.
+            {t("home_hero_title")}
           </h1>
           <p className="text-ink/60 text-base sm:text-lg mb-7 max-w-md mx-auto">
-            Enjoy delicious, fresh and affordable meals from{" "}
-            {settings.brandName || "AONE Restaurant Jos"}.
+            {t("home_hero_subtitle", { brand: settings.brandName || "AONE Restaurant Jos" })}
           </p>
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             <Link
               to="/menu"
               className="bg-jollof text-cream px-6 sm:px-7 py-3 rounded-full font-medium text-sm sm:text-base hover:bg-jollof-dark transition-colors"
             >
-              Order Now
+              {t("home_order_now")}
             </Link>
             <Link
               to="/menu"
               className="border border-ink/20 px-6 sm:px-7 py-3 rounded-full font-medium text-sm sm:text-base hover:border-ink/50 transition-colors"
             >
-              View Menu
+              {t("home_view_menu")}
             </Link>
           </div>
           {avgRating && (
@@ -99,7 +101,7 @@ export default function Home() {
               {"★".repeat(Math.round(avgRating))}
               {"☆".repeat(5 - Math.round(avgRating))}{" "}
               <span className="text-ink/50">
-                {avgRating.toFixed(1)} · {ratedReviews.length} review{ratedReviews.length === 1 ? "" : "s"}
+                {avgRating.toFixed(1)} · {ratedReviews.length} {reviewWord}
               </span>
             </p>
           )}
@@ -117,7 +119,7 @@ export default function Home() {
       {/* Categories */}
       {categoryCards.length > 0 && (
         <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-          <h2 className="font-display text-2xl mb-5">Browse by category</h2>
+          <h2 className="font-display text-2xl mb-5">{t("home_browse_category")}</h2>
           <div className="flex gap-5 overflow-x-auto pb-2 -mx-1 px-1">
             {categoryCards.map((c) => (
               <Link
@@ -170,7 +172,7 @@ export default function Home() {
       {/* Featured */}
       {featured.length > 0 && (
         <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-          <h2 className="font-display text-2xl mb-6">Featured today</h2>
+          <h2 className="font-display text-2xl mb-6">{t("home_featured_today")}</h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {featured.map((p) => (
               <FoodCard key={p.id} product={p} />
@@ -182,9 +184,9 @@ export default function Home() {
       {/* Popular */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-display text-2xl">Popular right now</h2>
+          <h2 className="font-display text-2xl">{t("home_popular_now")}</h2>
           <Link to="/menu" className="text-sm text-jollof hover:underline">
-            See full menu
+            {t("home_see_full_menu")}
           </Link>
         </div>
         {loadingProducts ? (
@@ -194,9 +196,7 @@ export default function Home() {
             ))}
           </div>
         ) : popular.length === 0 ? (
-          <p className="text-ink/50 text-sm">
-            The menu will appear here as soon as products are added from the Admin Dashboard.
-          </p>
+          <p className="text-ink/50 text-sm">{t("home_menu_empty")}</p>
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {popular.map((p) => (
@@ -222,26 +222,26 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="font-display text-2xl">What customers say</h2>
+            <h2 className="font-display text-2xl">{t("home_customers_say")}</h2>
             {avgRating && (
               <p className="text-sm text-gold mt-1">
                 {"★".repeat(Math.round(avgRating))}
                 {"☆".repeat(5 - Math.round(avgRating))}{" "}
                 <span className="text-ink/50">
-                  {avgRating.toFixed(1)} · {ratedReviews.length} review{ratedReviews.length === 1 ? "" : "s"}
+                  {avgRating.toFixed(1)} · {ratedReviews.length} {reviewWord}
                 </span>
               </p>
             )}
           </div>
           <Link to="/reviews" className="text-sm text-jollof hover:underline">
-            See all reviews
+            {t("home_see_all_reviews")}
           </Link>
         </div>
         {topLevelReviews.length === 0 ? (
           <div className="text-center py-10 border border-dashed border-ink/15 rounded-2xl">
-            <p className="text-ink/50 text-sm mb-3">No reviews yet — be the first to share yours!</p>
+            <p className="text-ink/50 text-sm mb-3">{t("home_no_reviews")}</p>
             <Link to="/reviews" className="text-jollof text-sm font-medium hover:underline">
-              Leave a review
+              {t("home_leave_review")}
             </Link>
           </div>
         ) : (

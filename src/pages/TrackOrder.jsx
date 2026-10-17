@@ -2,15 +2,26 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { subscribeToOrder } from "../firebase/orders";
 import { useSettings } from "../context/SettingsContext";
+import { useLanguage } from "../context/LanguageContext";
 import { formatNaira } from "../utils/format";
 
 const STEPS = ["Pending", "Confirmed", "Preparing", "Ready", "Out for Delivery", "Completed"];
+const STEP_LABEL_KEYS = {
+  Pending: "track_status_pending",
+  Confirmed: "track_status_confirmed",
+  Preparing: "track_status_preparing",
+  Ready: "track_status_ready",
+  "Out for Delivery": "track_status_out_for_delivery",
+  Completed: "track_status_completed",
+};
 
 function StatusTimeline({ status }) {
+  const { t } = useLanguage();
+
   if (status === "Cancelled") {
     return (
       <div className="bg-jollof/10 text-jollof rounded-xl px-4 py-3 text-sm font-medium text-center">
-        This order was cancelled.
+        {t("track_status_cancelled")}
       </div>
     );
   }
@@ -34,7 +45,7 @@ function StatusTimeline({ status }) {
               </div>
               {!isLast && <div className={`w-0.5 flex-1 min-h-[24px] ${done ? "bg-palm" : "bg-ink/10"}`} />}
             </div>
-            <p className={`pb-6 text-sm ${done ? "font-medium text-ink" : "text-ink/40"}`}>{step}</p>
+            <p className={`pb-6 text-sm ${done ? "font-medium text-ink" : "text-ink/40"}`}>{t(STEP_LABEL_KEYS[step])}</p>
           </div>
         );
       })}
@@ -46,6 +57,7 @@ export default function TrackOrder() {
   const { orderId: orderIdFromUrl } = useParams();
   const navigate = useNavigate();
   const { settings } = useSettings();
+  const { t } = useLanguage();
   const [inputId, setInputId] = useState(orderIdFromUrl || "");
   const [order, setOrder] = useState(undefined);
   const [loading, setLoading] = useState(false);
@@ -76,32 +88,28 @@ export default function TrackOrder() {
 
   return (
     <div className="max-w-xl mx-auto px-4 sm:px-6 py-12">
-      <h1 className="font-display text-3xl mb-2">Track Your Order</h1>
-      <p className="text-ink/60 mb-8">
-        Paste the order ID from your WhatsApp confirmation message to see its status.
-      </p>
+      <h1 className="font-display text-3xl mb-2">{t("track_title")}</h1>
+      <p className="text-ink/60 mb-8">{t("track_subtitle")}</p>
 
       <form onSubmit={handleSearch} className="flex gap-2 mb-10">
         <input
           value={inputId}
           onChange={(e) => setInputId(e.target.value)}
-          placeholder="Order ID"
+          placeholder={t("track_placeholder")}
           className="flex-1 border border-ink/15 rounded-full px-5 py-2.5 text-sm focus:border-jollof outline-none"
         />
         <button
           type="submit"
           className="bg-jollof text-cream px-6 py-2.5 rounded-full text-sm hover:bg-jollof-dark"
         >
-          Track
+          {t("track_button")}
         </button>
       </form>
 
-      {loading && <p className="text-ink/50 text-sm">Looking up your order…</p>}
+      {loading && <p className="text-ink/50 text-sm">{t("track_looking_up")}</p>}
 
       {order === null && !loading && (
-        <p className="text-ink/50 text-sm text-center py-8">
-          We couldn't find an order with that ID. Double-check it and try again.
-        </p>
+        <p className="text-ink/50 text-sm text-center py-8">{t("track_not_found")}</p>
       )}
 
       {order && (

@@ -2,19 +2,25 @@ import React, { useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useSettings } from "../context/SettingsContext";
+import { useLanguage } from "../context/LanguageContext";
 import { createOrder } from "../firebase/orders";
 import { buildWhatsAppOrderUrl } from "../utils/whatsapp";
 import { formatNaira, isValidNigerianPhone } from "../utils/format";
 import { isOpenNow } from "../utils/hours";
 import { distanceKm } from "../utils/distance";
 
-const ORDER_TYPES = ["Dine-in", "Takeaway", "Delivery"];
-
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart();
   const { settings } = useSettings();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const restaurantOpen = isOpenNow(settings.openTime, settings.closeTime);
+
+  const ORDER_TYPES = [
+    { value: "Dine-in", label: t("checkout_dine_in") },
+    { value: "Takeaway", label: t("checkout_takeaway") },
+    { value: "Delivery", label: t("checkout_delivery") },
+  ];
 
   const [form, setForm] = useState({
     customerName: "",
@@ -78,9 +84,9 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-24 text-center">
-        <p className="text-ink/60 mb-6">Your cart is empty, so there's nothing to check out yet.</p>
+        <p className="text-ink/60 mb-6">{t("checkout_empty")}</p>
         <Link to="/menu" className="text-jollof hover:underline">
-          Go to the menu
+          {t("checkout_go_menu")}
         </Link>
       </div>
     );
@@ -93,11 +99,11 @@ export default function Checkout() {
 
   function validate() {
     const next = {};
-    if (!form.customerName.trim()) next.customerName = "Please enter your name.";
-    if (!form.phone.trim()) next.phone = "Please enter a phone number.";
-    else if (!isValidNigerianPhone(form.phone)) next.phone = "Enter a valid Nigerian phone number.";
+    if (!form.customerName.trim()) next.customerName = t("checkout_error_name");
+    if (!form.phone.trim()) next.phone = t("checkout_error_phone_required");
+    else if (!isValidNigerianPhone(form.phone)) next.phone = t("checkout_error_phone_invalid");
     if (form.orderType === "Delivery" && !form.address.trim()) {
-      next.address = "Delivery address is required for delivery orders.";
+      next.address = t("checkout_error_address");
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -142,9 +148,7 @@ export default function Checkout() {
       navigate("/", { state: { orderPlaced: true, orderId } });
     } catch (err) {
       console.error(err);
-      setSubmitError(
-        "We couldn't save your order right now. Please check your connection and try again, or call us directly."
-      );
+      setSubmitError(t("checkout_submit_error"));
     } finally {
       setSubmitting(false);
     }
@@ -152,12 +156,12 @@ export default function Checkout() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
-      <h1 className="font-display text-3xl mb-8">Checkout</h1>
+      <h1 className="font-display text-3xl mb-8">{t("checkout_title")}</h1>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="customerName">
-            Full name
+            {t("checkout_full_name")}
           </label>
           <input
             id="customerName"
@@ -170,12 +174,12 @@ export default function Checkout() {
 
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="phone">
-            Phone number
+            {t("checkout_phone")}
           </label>
           <input
             id="phone"
             type="tel"
-            placeholder="080…"
+            placeholder={t("checkout_phone_placeholder")}
             value={form.phone}
             onChange={(e) => updateField("phone", e.target.value)}
             className="w-full border border-ink/15 rounded-xl px-4 py-2.5 focus:border-jollof outline-none"
@@ -184,20 +188,20 @@ export default function Checkout() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1.5">Order type</label>
+          <label className="block text-sm font-medium mb-1.5">{t("checkout_order_type")}</label>
           <div className="flex gap-3">
             {ORDER_TYPES.map((type) => (
               <button
                 type="button"
-                key={type}
-                onClick={() => updateField("orderType", type)}
+                key={type.value}
+                onClick={() => updateField("orderType", type.value)}
                 className={`px-4 py-2 rounded-full text-sm border transition-colors ${
-                  form.orderType === type
+                  form.orderType === type.value
                     ? "bg-jollof text-cream border-jollof"
                     : "border-ink/15 text-ink/70 hover:border-ink/40"
                 }`}
               >
-                {type}
+                {type.label}
               </button>
             ))}
           </div>
@@ -206,7 +210,7 @@ export default function Checkout() {
         {form.orderType !== "Dine-in" && (
           <div>
             <label className="block text-sm font-medium mb-1.5" htmlFor="address">
-              {form.orderType === "Delivery" ? "Delivery address" : "Pickup notes (optional)"}
+              {form.orderType === "Delivery" ? t("checkout_delivery_address") : t("checkout_pickup_notes")}
             </label>
             <textarea
               id="address"
@@ -221,26 +225,23 @@ export default function Checkout() {
               <div className="mt-3 bg-ink/5 rounded-xl px-4 py-3 text-sm">
                 {customerDistanceKm != null ? (
                   <p className="text-ink/70">
-                    You're about <strong>{customerDistanceKm.toFixed(1)} km</strong> away — delivery
-                    fee: <strong>{formatNaira(fees.deliveryFee, settings.currencySymbol)}</strong>
+                    {t("checkout_distance_fee", {
+                      km: customerDistanceKm.toFixed(1),
+                      fee: formatNaira(fees.deliveryFee, settings.currencySymbol),
+                    })}
                   </p>
                 ) : (
                   <>
-                    <p className="text-ink/60 mb-2">
-                      Share your location for an accurate delivery fee based on distance, or skip
-                      to use the standard fee.
-                    </p>
+                    <p className="text-ink/60 mb-2">{t("checkout_share_location")}</p>
                     <button
                       type="button"
                       onClick={useMyLocationForDelivery}
                       className="text-xs bg-white border border-ink/15 hover:border-jollof px-4 py-1.5 rounded-full"
                     >
-                      {locatingCustomer ? "Getting your location…" : "📍 Use my location"}
+                      {locatingCustomer ? t("checkout_getting_location") : t("checkout_use_my_location")}
                     </button>
                     {locationDenied && (
-                      <p className="text-xs text-ink/40 mt-2">
-                        Couldn't access your location — using the standard delivery fee instead.
-                      </p>
+                      <p className="text-xs text-ink/40 mt-2">{t("checkout_location_denied")}</p>
                     )}
                   </>
                 )}
@@ -251,7 +252,7 @@ export default function Checkout() {
 
         <div>
           <label className="block text-sm font-medium mb-1.5" htmlFor="notes">
-            Additional notes (optional)
+            {t("checkout_notes_label")}
           </label>
           <textarea
             id="notes"
@@ -264,23 +265,23 @@ export default function Checkout() {
 
         <div className="border border-ink/10 rounded-2xl p-5 space-y-2 bg-white">
           <div className="flex justify-between text-sm text-ink/70">
-            <span>Subtotal</span>
+            <span>{t("checkout_subtotal")}</span>
             <span>{formatNaira(subtotal, settings.currencySymbol)}</span>
           </div>
           {fees.takeawayFee > 0 && (
             <div className="flex justify-between text-sm text-ink/70">
-              <span>Takeaway fee</span>
+              <span>{t("checkout_takeaway_fee")}</span>
               <span>{formatNaira(fees.takeawayFee, settings.currencySymbol)}</span>
             </div>
           )}
           {fees.deliveryFee > 0 && (
             <div className="flex justify-between text-sm text-ink/70">
-              <span>Delivery fee</span>
+              <span>{t("checkout_delivery_fee")}</span>
               <span>{formatNaira(fees.deliveryFee, settings.currencySymbol)}</span>
             </div>
           )}
           <div className="flex justify-between font-display text-lg pt-2 border-t border-ink/10">
-            <span>Total</span>
+            <span>{t("checkout_total")}</span>
             <span className="text-jollof">{formatNaira(total, settings.currencySymbol)}</span>
           </div>
         </div>
@@ -288,8 +289,7 @@ export default function Checkout() {
         {submitError && <p className="text-jollof text-sm">{submitError}</p>}
         {!restaurantOpen && (
           <p className="text-sm bg-ink/5 text-ink/70 rounded-xl px-4 py-3 text-center">
-            We're currently closed ({settings.openingHours}). You can't check out right now, but
-            your cart is saved — come back when we're open!
+            {t("checkout_closed_message", { hours: settings.openingHours || "—" })}
           </p>
         )}
 
@@ -298,11 +298,9 @@ export default function Checkout() {
           disabled={submitting || !restaurantOpen}
           className="w-full bg-palm text-cream py-3.5 rounded-full font-medium hover:bg-palm-dark transition-colors disabled:opacity-60"
         >
-          {!restaurantOpen ? "Currently closed" : submitting ? "Placing order…" : "Checkout on WhatsApp"}
+          {!restaurantOpen ? t("checkout_currently_closed") : submitting ? t("checkout_placing_order") : t("checkout_submit")}
         </button>
-        <p className="text-xs text-ink/40 text-center">
-          Your order is saved first, then WhatsApp opens with the details pre-filled — just hit send to confirm.
-        </p>
+        <p className="text-xs text-ink/40 text-center">{t("checkout_footnote")}</p>
       </form>
     </div>
   );

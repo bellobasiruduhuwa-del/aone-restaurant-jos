@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { subscribeToReviews, createReview, createReply } from "../firebase/reviews";
+import { useLanguage } from "../context/LanguageContext";
 
 function timeAgo(ts) {
   if (!ts?.toDate) return "";
@@ -24,6 +25,7 @@ function Stars({ rating }) {
 }
 
 function ReplyForm({ parentId, onDone }) {
+  const { t } = useLanguage();
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
@@ -50,13 +52,13 @@ function ReplyForm({ parentId, onDone }) {
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Your name"
+        placeholder={t("reviews_name_placeholder")}
         className="border border-ink/15 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-jollof"
       />
       <textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="Write a reply…"
+        placeholder={t("reviews_reply_placeholder")}
         rows={2}
         className="border border-ink/15 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-jollof"
       />
@@ -65,13 +67,14 @@ function ReplyForm({ parentId, onDone }) {
         disabled={saving}
         className="self-start text-xs bg-ink/5 hover:bg-ink/10 px-3 py-1.5 rounded-full disabled:opacity-60"
       >
-        {saving ? "Posting…" : "Post reply"}
+        {saving ? t("reviews_posting") : t("reviews_post_reply")}
       </button>
     </form>
   );
 }
 
 function ReviewThread({ review, replies }) {
+  const { t } = useLanguage();
   const [showReply, setShowReply] = useState(false);
 
   return (
@@ -89,7 +92,7 @@ function ReviewThread({ review, replies }) {
         onClick={() => setShowReply((s) => !s)}
         className="text-xs text-jollof mt-3 hover:underline"
       >
-        {showReply ? "Cancel" : "Reply"}
+        {showReply ? t("reviews_cancel") : t("reviews_reply")}
       </button>
       {showReply && <ReplyForm parentId={review.id} onDone={() => setShowReply(false)} />}
 
@@ -111,6 +114,7 @@ function ReviewThread({ review, replies }) {
 }
 
 export default function Reviews() {
+  const { t } = useLanguage();
   const [all, setAll] = useState([]);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
@@ -145,28 +149,26 @@ export default function Reviews() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
-      <h1 className="font-display text-3xl mb-2">Customer Reviews</h1>
-      <p className="text-ink/60 mb-8">
-        Share your experience, or reply to what others are saying — just like a normal discussion.
-      </p>
+      <h1 className="font-display text-3xl mb-2">{t("reviews_title")}</h1>
+      <p className="text-ink/60 mb-8">{t("reviews_subtitle")}</p>
 
       <form onSubmit={submitReview} className="bg-white border border-ink/10 rounded-2xl p-6 mb-10 space-y-3">
-        <h2 className="font-display text-lg mb-1">Leave a review</h2>
+        <h2 className="font-display text-lg mb-1">{t("reviews_leave_review")}</h2>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Your name"
+          placeholder={t("reviews_name_placeholder")}
           className="w-full border border-ink/15 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-jollof"
         />
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="What did you think?"
+          placeholder={t("reviews_message_placeholder")}
           rows={3}
           className="w-full border border-ink/15 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-jollof"
         />
         <div className="flex items-center gap-2">
-          <span className="text-sm text-ink/60">Rating:</span>
+          <span className="text-sm text-ink/60">{t("reviews_rating_label")}</span>
           {[1, 2, 3, 4, 5].map((n) => (
             <button
               key={n}
@@ -184,15 +186,13 @@ export default function Reviews() {
           disabled={saving}
           className="bg-jollof text-cream px-6 py-2.5 rounded-full text-sm hover:bg-jollof-dark disabled:opacity-60"
         >
-          {saving ? "Posting…" : "Post review"}
+          {saving ? t("reviews_posting") : t("reviews_post_review")}
         </button>
       </form>
 
       <div className="space-y-5">
         {topLevel.length === 0 && (
-          <p className="text-ink/50 text-sm text-center py-8">
-            No reviews yet — be the first to share your experience!
-          </p>
+          <p className="text-ink/50 text-sm text-center py-8">{t("reviews_no_reviews")}</p>
         )}
         {topLevel.map((r) => (
           <ReviewThread key={r.id} review={r} replies={repliesFor(r.id)} />

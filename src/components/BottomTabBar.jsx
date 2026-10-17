@@ -1,14 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-
-const TABS = [
-  { to: "/", label: "Home", icon: "home" },
-  { to: "/menu", label: "Menu", icon: "menu" },
-  { to: "/cart", label: "Cart", icon: "cart" },
-  { to: "/contact", label: "Contact", icon: "contact" },
-  { to: "/track", label: "Track", icon: "track" },
-];
+import { useLanguage } from "../context/LanguageContext";
 
 function Icon({ name }) {
   switch (name) {
@@ -53,6 +46,15 @@ function Icon({ name }) {
 
 export default function BottomTabBar() {
   const { itemCount } = useCart();
+  const { t } = useLanguage();
+
+  const TABS = [
+    { to: "/", label: t("tab_home"), icon: "home" },
+    { to: "/menu", label: t("tab_menu"), icon: "menu" },
+    { to: "/cart", label: t("tab_cart"), icon: "cart" },
+    { to: "/contact", label: t("tab_contact"), icon: "contact" },
+    { to: "/track", label: t("tab_track"), icon: "track" },
+  ];
 
   return (
     <nav

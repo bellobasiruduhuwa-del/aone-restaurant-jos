@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useSettings } from "../context/SettingsContext";
+import { useLanguage } from "../context/LanguageContext";
 import { formatNaira } from "../utils/format";
 
 export default function FoodCard({ product }) {
   const { addItem } = useCart();
   const { settings } = useSettings();
+  const { t } = useLanguage();
   const [quantity, setQuantity] = useState(1);
 
   return (
@@ -22,17 +24,17 @@ export default function FoodCard({ product }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-ink/30 font-display text-sm">
-            Photo coming soon
+            {t("card_photo_soon")}
           </div>
         )}
         {product.featured && (
           <span className="absolute top-3 left-3 bg-gold text-cream text-xs px-2.5 py-1 rounded-full font-medium">
-            Featured
+            {t("card_featured")}
           </span>
         )}
         {!product.available && (
           <span className="absolute top-3 right-3 bg-ink/80 text-cream text-xs px-2.5 py-1 rounded-full font-medium">
-            Out of stock
+            {t("card_out_of_stock")}
           </span>
         )}
       </Link>
@@ -84,7 +86,7 @@ export default function FoodCard({ product }) {
             disabled={!product.available}
             className="text-xs sm:text-sm bg-palm text-cream px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-palm-dark transition-colors disabled:bg-ink/20 disabled:cursor-not-allowed w-full"
           >
-            Add to cart
+            {t("card_add_to_cart")}
           </button>
         </div>
       </div>

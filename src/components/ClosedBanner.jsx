@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSettings } from "../context/SettingsContext";
+import { useLanguage } from "../context/LanguageContext";
 import { isOpenNow } from "../utils/hours";
 
 export default function ClosedBanner() {
   const { settings } = useSettings();
+  const { t } = useLanguage();
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
@@ -16,8 +18,7 @@ export default function ClosedBanner() {
 
   return (
     <div className="bg-ink text-cream text-sm text-center py-2.5 px-4">
-      We're currently closed. Our hours are {settings.openingHours || "posted below"} — browse the
-      menu, but ordering opens again when we're back.
+      {t("closed_banner", { hours: settings.openingHours || "—" })}
     </div>
   );
 }
