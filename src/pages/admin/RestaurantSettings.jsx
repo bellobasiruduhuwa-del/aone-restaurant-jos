@@ -59,6 +59,7 @@ export default function RestaurantSettings() {
         directorTitle: form.directorTitle,
         directorPhotoUrl,
         directorMessage: form.directorMessage,
+        textScale: form.textScale,
         themeColors: form.themeColors,
         socialLinks: form.socialLinks,
       });
@@ -259,6 +260,24 @@ export default function RestaurantSettings() {
               />
             )}
           </div>
+        </div>
+
+        <div className="border-t border-ink/10 pt-5">
+          <label className="block text-sm font-medium mb-1.5">Text size (whole site)</label>
+          <select
+            value={form.textScale || 100}
+            onChange={(e) => update("textScale", Number(e.target.value))}
+            className="w-full sm:w-64 border border-ink/15 rounded-xl px-4 py-2.5 bg-white focus:border-jollof outline-none"
+          >
+            <option value={85}>Small</option>
+            <option value={100}>Normal</option>
+            <option value={115}>Large</option>
+            <option value={130}>Extra Large</option>
+          </select>
+          <p className="text-xs text-ink/40 mt-1.5">
+            Makes every piece of text on the site bigger or smaller at once — useful for
+            customers who find the default size hard to read.
+          </p>
         </div>
 
         <div className="border-t border-ink/10 pt-5">

@@ -25,5 +25,10 @@ export default function ThemeApplier() {
     });
   }, [settings.themeColors]);
 
+  useEffect(() => {
+    const scale = settings.textScale || 100;
+    document.documentElement.style.fontSize = `${scale}%`;
+  }, [settings.textScale]);
+
   return null;
 }

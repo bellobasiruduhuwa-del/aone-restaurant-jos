@@ -39,6 +39,7 @@ export const DEFAULT_SETTINGS = {
   directorTitle: "Director",
   directorPhotoUrl: "",
   directorMessage: "",
+  textScale: 100,
   themeColors: {
     jollof: "179 32 44",
     jollofDark: "138 25 34",
