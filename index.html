@@ -3,13 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#B3202C" />
+
+    <!-- Title & description: what shows in the browser tab, history, and Google results -->
+    <title>AONE Restaurant &amp; Fast Food Jos | Official Website</title>
     <meta
       name="description"
-      content="AONE Restaurant and Fast Food, Jos. Delicious Food. Quality Service. Happy Customers. Order Nigerian meals, fast food, drinks and special tea online."
+      content="Order Nigerian meals, fast food, drinks and snacks online from AONE Restaurant &amp; Fast Food on Bauchi Road, Jos. Dine-in, takeaway or delivery."
     />
-    <link rel="icon" href="/icons/icon-192.png" />
-    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <meta name="application-name" content="AONE Restaurant" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://www.aonerestaurantjos.com.ng/" />
+    <meta name="theme-color" content="#B3202C" />
+
+    <!-- Google Search Console verification (optional).
+         To verify with the "HTML tag" method: remove the comment markers
+         around the line below and replace PASTE_TOKEN_HERE with the code
+         Search Console gives you. -->
+    <!-- <meta name="google-site-verification" content="PASTE_TOKEN_HERE" /> -->
+
+    <!-- Icons: browser tab (favicon), Google search results, home-screen app -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
 
     <!-- Installable app behaviour on iOS Safari's "Add to Home Screen" -->
@@ -21,25 +38,80 @@
     <!-- Link previews: how this page looks when shared on WhatsApp, Facebook, etc. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="AONE Restaurant" />
-    <meta property="og:title" content="AONE Restaurant | Jos, Plateau State" />
+    <meta property="og:locale" content="en_NG" />
+    <meta property="og:url" content="https://www.aonerestaurantjos.com.ng/" />
+    <meta property="og:title" content="AONE Restaurant &amp; Fast Food Jos" />
     <meta
       property="og:description"
-      content="Delicious Food. Quality Service. Happy Customers. Order Nigerian meals, fast food, drinks and special tea online."
+      content="Explore our Nigerian meals, drinks, snacks and online ordering."
     />
-    <meta
-      property="og:image"
-      content="https://images.unsplash.com/photo-1665332195309-9d75071138f0?auto=format&fit=crop&w=1200&q=70"
-    />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AONE Restaurant | Jos, Plateau State" />
+    <meta property="og:image" content="https://www.aonerestaurantjos.com.ng/icons/icon-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="AONE Restaurant and Fast Food logo" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="AONE Restaurant &amp; Fast Food Jos" />
     <meta
       name="twitter:description"
-      content="Delicious Food. Quality Service. Happy Customers. Order Nigerian meals, fast food, drinks and special tea online."
+      content="Explore our Nigerian meals, drinks, snacks and online ordering."
     />
-    <meta
-      name="twitter:image"
-      content="https://images.unsplash.com/photo-1665332195309-9d75071138f0?auto=format&fit=crop&w=1200&q=70"
-    />
+    <meta name="twitter:image" content="https://www.aonerestaurantjos.com.ng/icons/icon-512.png" />
+    <meta name="twitter:image:alt" content="AONE Restaurant and Fast Food logo" />
+
+    <!-- Structured data: tells Google this is a restaurant (name, address,
+         phone, hours, menu link) and what the website itself is called. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.aonerestaurantjos.com.ng/#website",
+            "url": "https://www.aonerestaurantjos.com.ng/",
+            "name": "AONE Restaurant",
+            "alternateName": ["AONE Restaurant & Fast Food Jos", "AONE Jos"],
+            "inLanguage": "en-NG"
+          },
+          {
+            "@type": "Restaurant",
+            "@id": "https://www.aonerestaurantjos.com.ng/#restaurant",
+            "name": "AONE Restaurant & Fast Food",
+            "legalName": "A ONE RESTAURANT AND FAST FOOD LTD.",
+            "alternateName": ["AONE Restaurant", "AONE Jos"],
+            "url": "https://www.aonerestaurantjos.com.ng/",
+            "description": "Nigerian meals, fast food, drinks and snacks in Jos, Plateau State. Dine-in, takeaway and delivery, with online ordering.",
+            "image": "https://www.aonerestaurantjos.com.ng/icons/icon-512.png",
+            "logo": "https://www.aonerestaurantjos.com.ng/icons/icon-512.png",
+            "servesCuisine": ["Nigerian", "Fast food"],
+            "hasMenu": "https://www.aonerestaurantjos.com.ng/menu",
+            "telephone": "+2347066590000",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "No. 82/8 Daffo House, Bauchi Road",
+              "addressLocality": "Jos",
+              "addressRegion": "Plateau State",
+              "addressCountry": "NG"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                  "Sunday"
+                ],
+                "opens": "08:00",
+                "closes": "00:00"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,10 +119,42 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>AONE Restaurant | Jos, Plateau State</title>
+
+    <!-- Shown instantly (and to crawlers that don't run JavaScript) until
+         the app loads and replaces it. -->
+    <style>
+      #root > .boot {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 24px;
+        text-align: center;
+        background: #fff8f0;
+        color: #201a18;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      #root > .boot img { width: 88px; height: 88px; border-radius: 50%; }
+      #root > .boot h1 { margin: 0; font-size: 24px; }
+      #root > .boot p { margin: 0; max-width: 28em; opacity: 0.7; }
+      #root > .boot a { color: #b3202c; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot">
+        <img src="/icons/icon-192.png" alt="AONE Restaurant logo" width="88" height="88" />
+        <h1>AONE Restaurant &amp; Fast Food Jos</h1>
+        <p>
+          Nigerian meals, fast food, drinks and snacks — dine-in, takeaway and delivery
+          on Bauchi Road, Jos. Order online.
+        </p>
+        <p><a href="/menu">View our menu</a> · <a href="/contact">Contact &amp; location</a></p>
+      </div>
+    </div>
+    <noscript>Please enable JavaScript to order from AONE Restaurant &amp; Fast Food Jos.</noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

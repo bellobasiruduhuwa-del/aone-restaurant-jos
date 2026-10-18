@@ -12,6 +12,21 @@ const STORAGE_KEY = "aone_language";
 // six languages, which are unaffected.
 const RTL_LANGUAGES = ["ar"];
 
+// Search-engine bots and preview tools can't tap the language picker, so
+// without this they would only ever see the picker instead of the real
+// pages. For them (and only them) the picker is skipped. Real visitors
+// still get the picker exactly as before.
+const CRAWLER_RE =
+  /googlebot|bingbot|duckduckbot|baiduspider|yandex|slurp|facebookexternalhit|twitterbot|whatsapp|linkedinbot|telegrambot|applebot|lighthouse|chrome-lighthouse|pagespeed|google-inspectiontool|storebot-google/i;
+
+function isCrawler() {
+  try {
+    return CRAWLER_RE.test(navigator.userAgent || "");
+  } catch {
+    return false;
+  }
+}
+
 function loadStoredLanguage() {
   try {
     return localStorage.getItem(STORAGE_KEY) || null;
@@ -54,7 +69,7 @@ export function LanguageProvider({ children }) {
   const value = useMemo(() => {
     return {
       language: activeLang,
-      languageChosen: Boolean(language),
+      languageChosen: Boolean(language) || isCrawler(),
       setLanguage,
       clearLanguage,
       t: (key, vars) => translate(key, activeLang, vars),

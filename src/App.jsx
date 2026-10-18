@@ -9,6 +9,7 @@ import BottomTabBar from "./components/BottomTabBar";
 import FirebaseSetupNotice from "./components/FirebaseSetupNotice";
 import ClosedBanner from "./components/ClosedBanner";
 import ThemeApplier from "./components/ThemeApplier";
+import SeoManager from "./components/SeoManager";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LanguagePicker from "./components/LanguagePicker";
 import { useLanguage } from "./context/LanguageContext";
@@ -65,6 +66,7 @@ export default function App() {
   return (
     <>
       <ThemeApplier />
+      <SeoManager />
       <Routes>
       {/* Customer-facing site */}
       <Route path="/" element={<CustomerLayout><Home /></CustomerLayout>} />

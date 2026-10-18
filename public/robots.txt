@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+Disallow: /track
 
-Sitemap: https://aonerestaurantjos.com.ng/sitemap.xml
+Sitemap: https://www.aonerestaurantjos.com.ng/sitemap.xml
